@@ -7,6 +7,7 @@ using System.ComponentModel.Design;
 using Microsoft.VisualStudio.Text.Formatting;
 using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Operations;
 
 namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
@@ -31,7 +32,14 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
             var word = context.TextStructureNavigator.GetNextWord(context.TextView);
 
             if (word.HasValue)
-                context.EditorOperations.MoveCaret(word.Value.End);
+            {
+                ITextSelection selection = context.TextView.Selection;
+
+                if (selection.Mode == TextSelectionMode.Box)
+                    context.EditorOperations.ExtendSelection(word.Value.End);
+                else
+                    context.EditorOperations.MoveCaret(word.Value.End);
+            }
         }
     }
 }
