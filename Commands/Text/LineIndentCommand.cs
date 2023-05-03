@@ -29,28 +29,24 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
                 return;
             }
 
+            // If there's a multi-line selection, use the format command and quit
             // If there's not a multi-line selection, then clear it and setup for line indentation
             if (!selection.IsEmpty)
             {
-                if (selection.Mode == TextSelectionMode.Box)
+                VirtualSnapshotSpan selectionSpan = selection.StreamSelectionSpan;
+
+                if (selectionSpan.Start.Position.GetContainingLine().LineNumber != selectionSpan.End.Position.GetContainingLine().LineNumber)
                 {
+                    context.CommandRouter.ExecuteDTECommand("Edit.FormatSelection");
+                    context.CommandRouter.ExecuteDTECommand("Edit.SelectionCancel");
                     return;
                 }
-                else
-                {
-                    VirtualSnapshotSpan selectionSpan = selection.StreamSelectionSpan;
 
-                    if (selectionSpan.Start.Position.GetContainingLine().LineNumber != selectionSpan.End.Position.GetContainingLine().LineNumber)
-                    {
-                        return;
-                    }
+                selection.Clear();
 
-                    selection.Clear();
-
-                    // Since there was a selection on the line before the format, we are not obligated to place the caret at a specific place
-                    // after the format operation is done
-                    trackCaret = false;
-                }
+                // Since there was a selection on the line before the format, we are not obligated to place the caret at a specific place
+                // after the format operation is done
+                trackCaret = false;
             }
 
             // Strip any existing whitespace to setup the line for formatting
