@@ -22,7 +22,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
     ///
     /// Keys: PgDn | Ctrl+V
     /// </summary>
-    [EmacsCommand(EmacsCommandID.ScrollPageDown, CanBeRepeated = true, InverseCommand = EmacsCommandID.ScrollPageUp)]
+    [EmacsCommand(EmacsCommandID.ScrollPageDown, InverseCommand = EmacsCommandID.ScrollPageUp)]
     internal class ScrollPageDownCommand : EmacsCommand
     {
         internal override void Execute(EmacsCommandContext context)
@@ -34,17 +34,32 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
             // number of lines in the current view that should remain visible after scrolling
             int visibleLines = 2;
 
-            if (context.TextBuffer.GetLineNumber(lastLine.Start) == (lineCount - 1))
+            if (context.TextBuffer.GetLineNumber(lastLine.Start) == (lineCount - 1) &&
+                !context.Manager.UniversalArgument.HasValue)
             {
                 // End of buffer reached. Do nothing
                 return;
             }
 
-            // Scroll down while keeping some overlapping lines
-            context.TextView.DisplayTextLineContainingBufferPosition(
-                lastLine.Start,
-                context.TextView.LineHeight * Math.Max(0, visibleLines - 1),
-                ViewRelativePosition.Top);
+            if (context.Manager.UniversalArgument.HasValue)
+            {
+                // Scroll down the designated number of lines
+                // Always measure based on the first line, since the last line
+                // must not be on the bottom of the viewport
+                var firstLine = context.TextView.GetFirstSufficientlyVisibleLine();
+                context.TextView.DisplayTextLineContainingBufferPosition(
+                    firstLine.Start,
+                    context.TextView.LineHeight * (-1) * context.Manager.GetUniversalArgumentOrDefault(0),
+                    ViewRelativePosition.Top);
+            }
+            else
+            {
+                // Scroll down while keeping some overlapping lines
+                context.TextView.DisplayTextLineContainingBufferPosition(
+                    lastLine.Start,
+                    context.TextView.LineHeight * Math.Max(0, visibleLines - 1),
+                    ViewRelativePosition.Top);
+            }
 
             if (caret.Top > context.TextView.ViewportTop && caret.Bottom < context.TextView.ViewportBottom)
             {

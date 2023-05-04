@@ -18,7 +18,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
     /// 
     /// Keys: PgUp | Alt+V
     /// </summary>
-    [EmacsCommand(EmacsCommandID.ScrollPageUp, CanBeRepeated = true, InverseCommand = EmacsCommandID.ScrollPageDown)]
+    [EmacsCommand(EmacsCommandID.ScrollPageUp, InverseCommand = EmacsCommandID.ScrollPageDown)]
     internal class ScrollPageUpCommand : EmacsCommand
     {
         internal override void Execute(EmacsCommandContext context)
@@ -29,17 +29,29 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
             // number of lines in the current view that should remain visible after scrolling
             int visibleLines = 2;
 
-            if (context.TextBuffer.GetLineNumber(firstLine.Start) == 0)
+            if (context.TextBuffer.GetLineNumber(firstLine.Start) == 0 &&
+                !context.Manager.UniversalArgument.HasValue)
             {
                 // Beginning of buffer reached. Do nothing
                 return;
             }
 
-            // Scroll up while keeping some overlapping lines
-            context.TextView.DisplayTextLineContainingBufferPosition(
-                firstLine.Start,
-                context.TextView.LineHeight * Math.Max(0, visibleLines - 1),
-                ViewRelativePosition.Bottom);
+            if (context.Manager.UniversalArgument.HasValue)
+            {
+                // Scroll up the designated number of lines
+                context.TextView.DisplayTextLineContainingBufferPosition(
+                    firstLine.Start,
+                    context.TextView.LineHeight * context.Manager.GetUniversalArgumentOrDefault(0),
+                    ViewRelativePosition.Top);
+            }
+            else
+            {
+                // Scroll up while keeping some overlapping lines
+                context.TextView.DisplayTextLineContainingBufferPosition(
+                    firstLine.Start,
+                    context.TextView.LineHeight * Math.Max(0, visibleLines - 1),
+                    ViewRelativePosition.Bottom);
+            }
 
             if (caret.Top > context.TextView.ViewportTop && caret.Bottom < context.TextView.ViewportBottom)
             {
