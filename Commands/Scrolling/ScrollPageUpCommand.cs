@@ -9,6 +9,7 @@ using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Shell;
 using EnvDTE;
 using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Text.Editor;
 
 namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
 {
@@ -22,11 +23,32 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
     {
         internal override void Execute(EmacsCommandContext context)
         {
-            var currentLineDifference = context.TextBuffer.GetLineNumber(context.TextView.Caret.Position.BufferPosition) - context.TextBuffer.GetLineNumber(context.TextView.TextViewLines.FirstVisibleLine.Start);
+            var caret = context.TextView.Caret;
+            var firstLine = context.TextView.GetFirstSufficientlyVisibleLine();
 
-            context.EditorOperations.ScrollPageUp();
+            // number of lines in the current view that should remain visible after scrolling
+            int visibleLines = 2;
 
-            context.TextView.PositionCaretOnLine(currentLineDifference);
+            if (context.TextBuffer.GetLineNumber(firstLine.Start) == 0)
+            {
+                // Beginning of buffer reached. Do nothing
+                return;
+            }
+
+            // Scroll up while keeping some overlapping lines
+            context.TextView.DisplayTextLineContainingBufferPosition(
+                firstLine.Start,
+                context.TextView.LineHeight * Math.Max(0, visibleLines - 1),
+                ViewRelativePosition.Bottom);
+
+            if (caret.Top > context.TextView.ViewportTop && caret.Bottom < context.TextView.ViewportBottom)
+            {
+                // Caret is in the viewport. Leave it as is
+                return;
+            }
+
+            // Move the caret to the bottom line
+            context.TextView.Caret.MoveTo(context.TextView.GetLastSufficientlyVisibleLine().Start);
         }
     }
 }

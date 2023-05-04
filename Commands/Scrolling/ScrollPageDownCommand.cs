@@ -27,11 +27,33 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
     {
         internal override void Execute(EmacsCommandContext context)
         {
-            var currentLineDifference = context.TextBuffer.GetLineNumber(context.TextView.Caret.Position.BufferPosition) - context.TextBuffer.GetLineNumber(context.TextView.TextViewLines.FirstVisibleLine.Start);
+            var caret = context.TextView.Caret;
+            var lastLine = context.TextView.GetLastSufficientlyVisibleLine();
+            var lineCount = context.TextBuffer.CurrentSnapshot.LineCount;
 
-            context.EditorOperations.ScrollPageDown();
+            // number of lines in the current view that should remain visible after scrolling
+            int visibleLines = 2;
 
-            context.TextView.PositionCaretOnLine(currentLineDifference);
+            if (context.TextBuffer.GetLineNumber(lastLine.Start) == (lineCount - 1))
+            {
+                // End of buffer reached. Do nothing
+                return;
+            }
+
+            // Scroll down while keeping some overlapping lines
+            context.TextView.DisplayTextLineContainingBufferPosition(
+                lastLine.Start,
+                context.TextView.LineHeight * Math.Max(0, visibleLines - 1),
+                ViewRelativePosition.Top);
+
+            if (caret.Top > context.TextView.ViewportTop && caret.Bottom < context.TextView.ViewportBottom)
+            {
+                // Caret is in the viewport. Leave it as is
+                return;
+            }
+
+            // Move the caret to the top line
+            context.TextView.Caret.MoveTo(context.TextView.GetFirstSufficientlyVisibleLine().Start);
         }
     }
 }
