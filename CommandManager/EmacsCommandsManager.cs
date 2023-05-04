@@ -131,6 +131,9 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
                                     // Search the inverse command using the metadata
                                     inverseCommandMetadata = GetCommandMetadata(metadata.InverseCommand);
                                     inverseCommand = CreateCommand(inverseCommandMetadata);
+                                    // Invert the universal argument parameter
+                                    UniversalArgument = Math.Abs(GetUniversalArgumentOrDefault());
+
                                 }
 
                                 // If the command specifies that can be repeated use the universal argument as the counter, otherwise execute the command only once.
