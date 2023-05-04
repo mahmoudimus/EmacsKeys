@@ -7,6 +7,8 @@ using System.ComponentModel.Design;
 using Microsoft.VisualStudio.Text.Formatting;
 using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Text.Editor;
 using EnvDTE;
 
 namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
@@ -30,9 +32,22 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
 
                 if (textWindow != null && textWindow.Panes.Count == 1)
                 {
+                    ITextCaret caret = context.TextView.Caret;
+                    double viewHeight = context.TextView.ViewportHeight;
+
+                    if ((caret.Top + caret.Height) > (viewHeight / 2.0))
+                    {
+                        // Move line to a quarter page position from the top.
+                        // When the window is split, the carret will be on the center of each pane
+                        // Note that we only need to render the top half of the page,
+                        // since the bottom half will be replaced by the split window
+                        context.TextView.DisplayTextLineContainingBufferPosition(caret.Position.BufferPosition, viewHeight / 4.0, ViewRelativePosition.Top,
+                            context.TextView.ViewportWidth, viewHeight / 2.0);
+                    }
+
                     context.CommandRouter.ExecuteDTECommand("Window.Split");
                 }
-            }                      
+            }
         }
     }
 }
