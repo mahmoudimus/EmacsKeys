@@ -19,6 +19,40 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
             return view.Caret.Position.BufferPosition;
         }
 
+        internal static ITextViewLine GetFirstSufficientlyVisibleLine(this ITextView view, double threshold = 0.9)
+        {
+            if (threshold < 0.0 || threshold > 1.0)
+            {
+                throw new InvalidOperationException("Invalid threshold parameter, must be between 0.0 and 1.0");
+            }
+
+            ITextViewLine firstLine = view.TextViewLines.FirstVisibleLine;
+            if (firstLine.Bottom - view.ViewportTop > threshold * view.LineHeight)
+            {
+                // line is sufficiently visible
+                return firstLine;
+            }
+            // not sufficiently visible, return the line below it
+            return view.TextViewLines.GetTextViewLineContainingYCoordinate(firstLine.Bottom + 0.5 * view.LineHeight);
+        }
+
+        internal static ITextViewLine GetLastSufficientlyVisibleLine(this ITextView view, double threshold = 0.9)
+        {
+            if (threshold < 0.0 || threshold > 1.0)
+            {
+                throw new InvalidOperationException("Invalid threshold parameter, must be between 0.0 and 1.0");
+            }
+
+            ITextViewLine lastLine = view.TextViewLines.LastVisibleLine;
+            if (view.ViewportBottom - lastLine.Top > threshold * view.LineHeight)
+            {
+                // line is sufficiently visible
+                return lastLine;
+            }
+            // not sufficiently visible, return the line above it
+            return view.TextViewLines.GetTextViewLineContainingYCoordinate(lastLine.Top - 0.5 * view.LineHeight);
+        }
+
         // A kill string stores the set of cut text in a view until it's pushed down to the clipboard. For instance,
         // if the user performs 4 kill word commands, the text for all those 4 commands is accumulated and then
         // pushed to the clipboard when the user performs a non kill command (for instance moving the caret)
