@@ -34,6 +34,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
                 }
 
                 context.CommandRouter.ExecuteDTECommand("Edit.Copy");
+                context.CommandRouter.ExecuteDTECommand("Edit.SelectionCancel");
             }
             else
             {
