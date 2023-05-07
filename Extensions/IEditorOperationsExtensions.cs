@@ -92,8 +92,15 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
 
         internal static void MoveCaret(this IEditorOperations editorOperations, SnapshotPoint bufferPosition, bool extendSelection)
         {
-            if (extendSelection)
+            if (extendSelection && !editorOperations.TextView.Selection.IsEmpty)
             {
+                // Extend selection to the desired position
+                editorOperations.ExtendSelection(bufferPosition);
+            }
+            else if (extendSelection)
+            {
+                // We are in selection mode, but haven't started any actual selection
+                // Using the Select() function will help us begin the selection
                 VirtualSnapshotPoint anchorPoint = editorOperations.TextView.Selection.AnchorPoint;
                 editorOperations.TextView.Caret.MoveTo(bufferPosition);
                 editorOperations.TextView.Selection.Select(anchorPoint.TranslateTo(editorOperations.TextView.TextSnapshot), editorOperations.TextView.Caret.Position.VirtualBufferPosition);

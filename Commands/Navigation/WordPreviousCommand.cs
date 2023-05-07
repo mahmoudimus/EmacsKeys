@@ -32,12 +32,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
 
             if (word.HasValue)
             {
-                ITextSelection selection = context.TextView.Selection;
-
-                if (selection.Mode == TextSelectionMode.Box)
-                    context.EditorOperations.ExtendSelection(word.Value.Start);
-                else
-                    context.EditorOperations.MoveCaret(word.Value.Start);
+                context.EditorOperations.MoveCaret(word.Value.Start);
             }
         }
     }
