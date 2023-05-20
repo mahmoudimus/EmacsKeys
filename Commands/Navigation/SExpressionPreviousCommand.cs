@@ -23,12 +23,24 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
     {
         internal override void Execute(EmacsCommandContext context)
         {
-            // TODO: implement s-expression search
+            var position = context.TextView.GetCaretPosition();
             var word = context.TextStructureNavigator.GetPreviousWord(context.TextView);
 
             if (word.HasValue)
             {
-                context.EditorOperations.MoveCaret(word.Value.Start);
+                var enclosing = context.TextStructureNavigator.GetSpanOfEnclosing(word.Value);
+                if (position == enclosing.End)
+                {
+                    // The caret is at the end of an enclosing
+                    // Move it to the beggining.
+                    context.EditorOperations.MoveCaret(enclosing.Start);
+                }
+                else
+                {
+                    // The caret is in the middle of an enclosing
+                    // Move it to the beginning of the word
+                    context.EditorOperations.MoveCaret(word.Value.Start);
+                }
             }
         }
     }
