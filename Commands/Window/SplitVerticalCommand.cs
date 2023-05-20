@@ -30,7 +30,12 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
             {
                 var textWindow = vs.ActiveDocument.ActiveWindow.Object as TextWindow;
 
-                if (textWindow != null && textWindow.Panes.Count == 1)
+                if (textWindow == null)
+                {
+                    return;
+                }
+
+                if (textWindow.Panes.Count == 1)
                 {
                     ITextCaret caret = context.TextView.Caret;
                     double viewHeight = context.TextView.ViewportHeight;
@@ -45,6 +50,13 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
                             context.TextView.ViewportWidth, viewHeight / 2.0);
                     }
 
+                    context.CommandRouter.ExecuteDTECommand("Window.Split");
+                }
+                else
+                {
+                    // Having more than 2 vertical panes is not currently supported.
+                    // If the window is already split, then fold it back
+                    // Calling the Window.Split command will toggle it for us
                     context.CommandRouter.ExecuteDTECommand("Window.Split");
                 }
             }
