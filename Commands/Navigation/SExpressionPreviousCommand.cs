@@ -23,17 +23,24 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
     {
         internal override void Execute(EmacsCommandContext context)
         {
-            var position = context.TextView.GetCaretPosition();
+            var startPosition = context.TextView.GetCaretPosition();
+            context.EditorOperations.MoveToPreviousNonWhiteSpaceCharacter();
+
             var word = context.TextStructureNavigator.GetPreviousWord(context.TextView);
 
             if (word.HasValue)
             {
                 var enclosing = context.TextStructureNavigator.GetSpanOfEnclosing(word.Value);
-                if (position == enclosing.End)
+                if (startPosition == enclosing.End || context.TextView.GetCaretPosition() == enclosing.End)
                 {
                     // The caret is at the end of an enclosing
-                    // Move it to the beggining.
+                    // Move it to the beginning.
                     context.EditorOperations.MoveCaret(enclosing.Start);
+                    // Sometimes the start of the enclosing may be marked with spaces or newlines
+                    // Move beyond those to the first non-whitespace character
+                    context.EditorOperations.MoveToNextNonWhiteSpaceCharacter();
+                    // NOTE: moving in two steps ensures that the start of the enclosure remains
+                    // visible within the final buffer
                 }
                 else
                 {

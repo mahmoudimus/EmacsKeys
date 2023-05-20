@@ -22,15 +22,23 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
     internal class SExpressionNextCommand : EmacsCommand
     {
         internal override void Execute(EmacsCommandContext context)
-        {
-            var position = context.TextView.GetCaretPosition();
+        {   
+            var startPosition = context.TextView.GetCaretPosition();
+            context.EditorOperations.MoveToNextNonWhiteSpaceCharacter();
+
             var word = context.TextStructureNavigator.GetNextWord(context.TextView);
+
             if (word.HasValue)
             {
                 var enclosing = context.TextStructureNavigator.GetSpanOfEnclosing(word.Value);
-                if (position == enclosing.Start)
+
+                // Sometimes the start of the enclosing may be marked with spaces or newlines
+                // Move beyond those to the first non-whitespace character
+                var startEnclosing = context.EditorOperations.GetNextNonWhiteSpaceCharacter(enclosing.Start);
+
+                if (startPosition == startEnclosing || context.TextView.GetCaretPosition() == startEnclosing)
                 {
-                    // The caret is at the beggining of an enclosing
+                    // The caret is at the beginning of an enclosing
                     // Move it to the end.
                     context.EditorOperations.MoveCaret(enclosing.End);
                 }
