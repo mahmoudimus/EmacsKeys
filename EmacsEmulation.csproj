@@ -219,6 +219,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\Marks\RectangleMarkModeCommand.cs" />
+    <Compile Include="Commands\Window\SplitHorizontalCommand.cs" />
     <Compile Include="Utilities\ClipboardRing.cs" />
     <Compile Include="CommandManager\CommandRouter.cs" />
     <Compile Include="CommandManager\CommandRouterProvider.cs" />

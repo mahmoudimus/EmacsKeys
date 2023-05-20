@@ -61,6 +61,14 @@
           <ButtonText>EmacsRectangleMarkMode</ButtonText>
         </Strings>
       </Button>
+
+      <Button guid="guidEmacsEmulationsCmdSet" id="cmdidSplitHorizontal" priority="0x0100" type="Button">
+          <Parent guid="guidEmacsEmulationsCmdSet" id="EmacsEmulationsMenuGroup" />
+          <CommandFlag>CommandWellOnly</CommandFlag>
+          <Strings>
+              <ButtonText>EmacsSplitHorizontal</ButtonText>
+          </Strings>
+      </Button>
     </Buttons>
 
 
@@ -90,6 +98,7 @@
     <GuidSymbol name="guidEmacsEmulationsCmdSet" value="{9a95f3af-f86a-4aa2-80e6-012bf65dbbc3}">
       <IDSymbol name="EmacsEmulationsMenuGroup" value="0x1020" />
       <IDSymbol name="cmdidRectangleMarkMode" value="0x3C" />
+      <IDSymbol name="cmdidSplitHorizontal" value="0x40" />
     </GuidSymbol>
 
 

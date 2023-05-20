@@ -63,6 +63,8 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
 
         QuotedInsert = 0x3A,
         ActivateRegion = 0x3B,
-        RectangleMarkMode = 0x3C
+        RectangleMarkMode = 0x3C,
+
+        SplitHorizontal = 0x40
     }
 }
