@@ -51,17 +51,21 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
                     }
 
                     // Merge tab groups
-                    // Avoid using the CommandRouter.ExecuteDTECommand, since it doesn't
-                    // allow us to handle potential exceptions.
+                    // Since we don't know if we are in the left pane or in the right pane,
+                    // try merging both ways. Since one of the calls will always fail,
+                    // remember to catch exceptions to avoid displaying on the minibuffer.
+                    // Using vs.ExecuteCommand directly without going through the router give
+                    // us more flexibilty to handle exceptions.
                     try
                     {
                         vs.ExecuteCommand("Window.MoveAllToPreviousTabGroup");
                     }
-                    catch (COMException)
+                    catch (COMException) {}
+                    try
                     {
-                        // The command fails when there are no suitable tab groups to move to.
-                        // Catch exceptions to avoid displaying them on the minibuffer
+                        vs.ExecuteCommand("Window.MoveAllToNextTabGroup");
                     }
+                    catch (COMException) {}
                 }
             }
         }
