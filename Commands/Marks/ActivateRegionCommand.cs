@@ -1,11 +1,15 @@
 ﻿using System;
-using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.Text.Editor;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Runtime.InteropServices;
+using System.ComponentModel.Design;
+using System.ComponentModel.Composition;
 
 namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
 {
     /// <summary>
-	/// Activates the region
+    /// Activates the region
     /// 
     /// Keys: ?
     /// </summary>
@@ -14,18 +18,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
     {
         internal override void Execute(EmacsCommandContext context)
         {
-            ITextSelection selection = context.TextView.Selection;
-
-            if (selection.Mode == TextSelectionMode.Box)
-            {
-                // Already has a box selection, toggle stream mode instead
-                selection.Mode = TextSelectionMode.Stream;
-                return;
-            }
-
-            // HACK: move one char forward and then back, since we cannot start an empty selection
-            context.CommandRouter.ExecuteDTECommand("Edit.CharRightExtendColumn");
-            context.CommandRouter.ExecuteDTECommand("Edit.CharLeftExtendColumn");
+            context.MarkSession.Activate();
         }
     }
 }

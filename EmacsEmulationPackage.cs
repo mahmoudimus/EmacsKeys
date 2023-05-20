@@ -38,7 +38,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
     // in the Help/About dialog of Visual Studio.
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)]
     // This attribute is needed to let the shell know that this package exposes some menus.
-    //[ProvideMenuResource("Menus.ctmenu", 1)]
+    [ProvideMenuResource("Menus.ctmenu", 1)]
     [Guid("d88ec9a6-cdda-4b04-8e46-ca81a3997a3a")]
     [ProvideAutoLoad(UIContextGuids.SolutionExists, PackageAutoLoadFlags.BackgroundLoad)]
     public sealed class EmacsEmulationPackage : AsyncPackage
