@@ -124,8 +124,9 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
 
                             if (evaluateUniversalArgument)
                             {
-                                // Check if we should execute the inverse logic of the command by checking if the universal argument is lower than 0
-                                shouldExecuteInverse = GetUniversalArgumentOrDefault() < 0;
+                                // Check if we should execute the inverse logic of the command by checking if there are
+                                // any registered commands, and if the universal argument is lower than 0
+                                shouldExecuteInverse = (metadata.InverseCommand != 0) && (GetUniversalArgumentOrDefault() < 0);
                                 if (shouldExecuteInverse)
                                 {
                                     // Search the inverse command using the metadata
@@ -133,7 +134,6 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
                                     inverseCommand = CreateCommand(inverseCommandMetadata);
                                     // Invert the universal argument parameter
                                     UniversalArgument = Math.Abs(GetUniversalArgumentOrDefault());
-
                                 }
 
                                 // If the command specifies that can be repeated use the universal argument as the counter, otherwise execute the command only once.
