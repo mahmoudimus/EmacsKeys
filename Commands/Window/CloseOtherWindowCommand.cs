@@ -22,6 +22,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
     {
         internal override void Execute(EmacsCommandContext context)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             DTE vs = context.Manager.ServiceProvider.GetService<DTE>();
 
             if (vs.ActiveDocument != null && vs.ActiveDocument.ActiveWindow != null)
@@ -49,9 +50,18 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
                         }
                     }
 
-                    // TODO: Merge tab groups
-                    // context.CommandRouter.ExecuteDTECommand("Window.MoveAllToPreviousTabGroup");
-                    // context.CommandRouter.ExecuteDTECommand("Window.MoveAllToNextTabGroup");
+                    // Merge tab groups
+                    // Avoid using the CommandRouter.ExecuteDTECommand, since it doesn't
+                    // allow us to handle potential exceptions.
+                    try
+                    {
+                        vs.ExecuteCommand("Window.MoveAllToPreviousTabGroup");
+                    }
+                    catch (COMException)
+                    {
+                        // The command fails when there are no suitable tab groups to move to.
+                        // Catch exceptions to avoid displaying them on the minibuffer
+                    }
                 }
             }
         }
