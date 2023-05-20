@@ -15,7 +15,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
         private static bool ShouldExtendSelection(IEditorOperations editorOperations)
         {
             var session = MarkSession.GetSession(editorOperations.TextView);
-
+            session.DeactivateAfterSearch();
             return session.IsActive;
         }
 

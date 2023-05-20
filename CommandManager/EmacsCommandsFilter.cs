@@ -41,7 +41,6 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
                     {
                         // we did find a match so we execute the corresponding command
                         this.manager.Execute(this.view, command);
-                        manager.AfterSearch = false;
                     }
                     catch (Exception ex)
                     {
@@ -79,7 +78,9 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
                         return VSConstants.S_OK;
                     }
                     else if (pguidCmdGroup == VSConstants.VSStd2K &&
-                        (nCmdID == (uint)VSConstants.VSStd2KCmdID.ISEARCH || nCmdID == (uint)VSConstants.VSStd2KCmdID.ISEARCHBACK))
+                        (nCmdID == (uint)VSConstants.VSStd2KCmdID.ISEARCH || nCmdID == (uint)VSConstants.VSStd2KCmdID.ISEARCHBACK) ||
+                             pguidCmdGroup == VSConstants.GUID_VSStandardCommandSet97 &&
+                        (nCmdID == (uint)VSConstants.VSStd97CmdID.GotoDefn || nCmdID == (uint)VSConstants.VSStd97CmdID.GotoDecl))
                     {
                         MarkSession.GetSession(view).PushMark();
                         manager.AfterSearch = true;

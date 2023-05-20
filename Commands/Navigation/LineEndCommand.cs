@@ -19,14 +19,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
     {
         internal override void Execute(EmacsCommandContext context)
         {
-            if (context.Manager.AfterSearch)
-            {
-                context.EditorOperations.MoveCaretToEndOfPhysicalLine(false);
-            }
-            else
-            {
-                context.EditorOperations.MoveCaretToEndOfPhysicalLine();
-            }
+            context.EditorOperations.MoveCaretToEndOfPhysicalLine();
         }
     }
 }

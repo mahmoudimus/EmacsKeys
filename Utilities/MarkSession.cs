@@ -65,6 +65,22 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
         }
 
         /// <summary>
+        /// Deactivates the selection after search operations.
+        /// Search operations automatically create a selection to highlight the text,
+        /// but this should not be considered during move operations.
+        /// </summary>
+        internal void DeactivateAfterSearch()
+        {
+            if (this.manager.AfterSearch)
+            {
+                // Ideally, search operations within the same file would expand previous selections.
+                // However, e.g. Edit.IncrementalSearch already deactivates the selection by default,
+                // and there are still no alternatives in the EmacsCommand set.
+                this.Deactivate();
+            }
+        }
+
+        /// <summary>
         /// Moves the cursor to the current mark in the location stack and moves the current mark to the location where the cursor mark was when the command was invoked. 
         /// </summary>
         internal void SwapPointAndMark()
@@ -226,6 +242,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
                 this.ClearSelection();
             }
             this.IsActive = false;
+            this.manager.AfterSearch = false;
         }
 
         int IOleCommandTarget.QueryStatus(ref Guid pguidCmdGroup, uint cCmds, OLECMD[] prgCmds, IntPtr pCmdText)
