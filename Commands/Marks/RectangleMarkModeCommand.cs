@@ -19,16 +19,27 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
         {
             ITextSelection selection = context.TextView.Selection;
 
-            if (selection.Mode == TextSelectionMode.Box)
+            // Disable Rectangle-Mark mode if ARG is zero or negative,
+            // or if it is already enabled and no arguments were passed
+            if (!context.UniversalArgument.HasValue && (selection.Mode == TextSelectionMode.Box) ||
+                context.UniversalArgument.HasValue && (context.UniversalArgument.Value <= 0))
             {
                 // Already has a box selection, toggle stream mode instead
                 selection.Mode = TextSelectionMode.Stream;
                 return;
             }
 
-            // HACK: move one char forward and then back, since we cannot start an empty selection
-            context.CommandRouter.ExecuteDTECommand("Edit.CharRightExtendColumn");
-            context.CommandRouter.ExecuteDTECommand("Edit.CharLeftExtendColumn");
+            // Otherwise, enable the Rectangle-Mark mode.
+            // i.e. if ARG is positive, or if the Rectangle-Mark mode is not enabled
+            // and no arguments were passed
+
+            if (selection.IsEmpty)
+            {
+                // Activate the region if needed
+                context.MarkSession.PushMark();
+            }
+
+            selection.Mode = TextSelectionMode.Box;
         }
     }
 }
