@@ -69,6 +69,22 @@
               <ButtonText>EmacsSplitHorizontal</ButtonText>
           </Strings>
       </Button>
+
+      <Button guid="guidEmacsEmulationsCmdSet" id="cmdidSExpressionPrevious" priority="0x0100" type="Button">
+          <Parent guid="guidEmacsEmulationsCmdSet" id="EmacsEmulationsMenuGroup" />
+          <CommandFlag>CommandWellOnly</CommandFlag>
+          <Strings>
+              <ButtonText>EmacsSExpressionPrevious</ButtonText>
+          </Strings>
+      </Button>
+
+      <Button guid="guidEmacsEmulationsCmdSet" id="cmdidSExpressionNext" priority="0x0100" type="Button">
+          <Parent guid="guidEmacsEmulationsCmdSet" id="EmacsEmulationsMenuGroup" />
+          <CommandFlag>CommandWellOnly</CommandFlag>
+          <Strings>
+              <ButtonText>EmacsSExpressionNext</ButtonText>
+          </Strings>
+      </Button>
     </Buttons>
 
 
@@ -99,6 +115,8 @@
       <IDSymbol name="EmacsEmulationsMenuGroup" value="0x1020" />
       <IDSymbol name="cmdidRectangleMarkMode" value="0x3C" />
       <IDSymbol name="cmdidSplitHorizontal" value="0x40" />
+      <IDSymbol name="cmdidSExpressionPrevious" value="0x41" />
+      <IDSymbol name="cmdidSExpressionNext" value="0x42" />
     </GuidSymbol>
 
 
