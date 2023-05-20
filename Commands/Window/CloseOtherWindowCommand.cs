@@ -27,12 +27,33 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
             if (vs.ActiveDocument != null && vs.ActiveDocument.ActiveWindow != null)
             {
                 var textWindow = vs.ActiveDocument.ActiveWindow.Object as TextWindow;
+                var documentWindows = vs.ActiveDocument.Windows;
 
-                if (textWindow != null && textWindow.Panes.Count == 2)
+                if (textWindow != null)
                 {
-                    context.CommandRouter.ExecuteDTECommand("Window.Split");
+                    // Close vertical panes
+                    if (textWindow.Panes.Count == 2)
+                    {
+                        context.CommandRouter.ExecuteDTECommand("Window.Split");
+                    }
+
+                    // Close horizontal panes
+                    if (documentWindows.Count > 1)
+                    {
+                        for (int i = 1; i <= documentWindows.Count; i++)
+                        {
+                            if (documentWindows.Item(i).Object !=  textWindow)
+                            {
+                                documentWindows.Item(i).Close();
+                            }
+                        }
+                    }
+
+                    // TODO: Merge tab groups
+                    // context.CommandRouter.ExecuteDTECommand("Window.MoveAllToPreviousTabGroup");
+                    // context.CommandRouter.ExecuteDTECommand("Window.MoveAllToNextTabGroup");
                 }
-            }                      
+            }
         }
     }
 }
