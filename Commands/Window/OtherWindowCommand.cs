@@ -32,7 +32,17 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
                 {
                     context.CommandRouter.ExecuteDTECommand("Window.NextSplitPane");    
                 }
-            }                      
+                else
+                {
+                    // TODO
+                    // The current EmacsEmulation version has limited support for tab groups,
+                    // which are used as horizontal panes (Ctrl+X, 3).
+                    // Relying on the NavigateTabGroups extension provide us some functionality,
+                    // although we still need a way to check if there are multiple tab groups or
+                    // not in order to swap between panes as in Emacs.
+                    context.CommandRouter.ExecuteDTECommand("Tools.NavigateTabGroups.Next");
+                }
+            }
         }
     }
 }
