@@ -134,6 +134,58 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
             editorOperations.MoveToPreviousCharacter(ShouldExtendSelection(editorOperations));
         }
 
+        internal static SnapshotPoint GetNextNonWhiteSpaceCharacter(this IEditorOperations editorOperations, SnapshotPoint position)
+        {
+            try
+            {
+                while (Char.IsWhiteSpace(position.GetChar()))
+                {
+                    position += 1;
+                }
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                // end of buffer reached
+            }
+            return position;
+        }
+
+        internal static SnapshotPoint GetPreviousNonWhiteSpaceCharacter(this IEditorOperations editorOperations, SnapshotPoint position)
+        {
+            try
+            {
+                while (Char.IsWhiteSpace((position - 1).GetChar()))
+                {
+                    position -= 1;
+                }
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                // beginning of buffer reached
+            }
+            return position;
+        }
+
+        internal static SnapshotPoint GetNextNonWhiteSpaceCharacter(this IEditorOperations editorOperations)
+        {
+            return GetNextNonWhiteSpaceCharacter(editorOperations, editorOperations.TextView.Caret.Position.BufferPosition);
+        }
+
+        internal static SnapshotPoint GetPreviousNonWhiteSpaceCharacter(this IEditorOperations editorOperations)
+        {
+            return GetPreviousNonWhiteSpaceCharacter(editorOperations, editorOperations.TextView.Caret.Position.BufferPosition);
+        }
+
+        internal static void MoveToNextNonWhiteSpaceCharacter(this IEditorOperations editorOperations)
+        {
+            editorOperations.MoveCaret(GetNextNonWhiteSpaceCharacter(editorOperations));
+        }
+
+        internal static void MoveToPreviousNonWhiteSpaceCharacter(this IEditorOperations editorOperations)
+        {
+            editorOperations.MoveCaret(GetPreviousNonWhiteSpaceCharacter(editorOperations));
+        }
+
         internal static void MoveToEndOfLine(this IEditorOperations editorOperations)
         {
             editorOperations.MoveToEndOfLine(ShouldExtendSelection(editorOperations));
