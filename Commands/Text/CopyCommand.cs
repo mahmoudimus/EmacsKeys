@@ -33,8 +33,8 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
                     context.Manager.ClipboardRing.Add(textSelection.StreamSelectionSpan.GetText());
                 }
 
-                context.CommandRouter.ExecuteDTECommand("Edit.Copy");
-                context.CommandRouter.ExecuteDTECommand("Edit.SelectionCancel");
+                context.EditorOperations.CopySelection();
+                textSelection.Clear();
             }
             else
             {
