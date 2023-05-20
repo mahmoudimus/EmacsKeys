@@ -35,7 +35,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
                     // Close vertical panes
                     if (textWindow.Panes.Count == 2)
                     {
-                        context.CommandRouter.ExecuteDTECommand("Window.Split");
+                        vs.ExecuteCommand("Window.Split");
                     }
 
                     // Close horizontal panes

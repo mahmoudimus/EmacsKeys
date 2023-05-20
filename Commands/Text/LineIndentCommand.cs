@@ -1,7 +1,9 @@
 ﻿using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods;
+using Microsoft.VisualStudio.Shell;
 using System.Globalization;
+using EnvDTE;
 
 namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
 {
@@ -37,8 +39,9 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
 
                 if (selectionSpan.Start.Position.GetContainingLine().LineNumber != selectionSpan.End.Position.GetContainingLine().LineNumber)
                 {
-                    context.CommandRouter.ExecuteDTECommand("Edit.FormatSelection");
-                    context.CommandRouter.ExecuteDTECommand("Edit.SelectionCancel");
+                    DTE vs = context.Manager.ServiceProvider.GetService<DTE>();
+                    vs.ExecuteCommand("Edit.FormatSelection");
+                    vs.ExecuteCommand("Edit.SelectionCancel");
                     return;
                 }
 
