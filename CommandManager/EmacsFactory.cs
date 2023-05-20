@@ -40,7 +40,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
 
             if (view.Roles.Contains(PredefinedTextViewRoles.PrimaryDocument))
             {
-                CommandRouter commandRouter = CommandRouterProvider.GetCommandRouter(view);
+                CommandRouter commandRouter = CommandRouterProvider.GetCommandRouter(view, this.Manager);
 
                 // Register internal handlers with the command router
 

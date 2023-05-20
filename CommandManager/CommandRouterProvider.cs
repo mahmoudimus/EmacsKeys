@@ -24,7 +24,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
         [Import]
         private IVsEditorAdaptersFactoryService EditorAdapterFactoryService = null;
 
-        public CommandRouter GetCommandRouter(ITextView view)
+        public CommandRouter GetCommandRouter(ITextView view, EmacsCommandsManager manager)
         {
             return view.Properties.GetOrCreateSingletonProperty<CommandRouter>(
                 () => 
@@ -34,7 +34,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
                         DTE dte = ServiceProvider.GetService<DTE>();
 
                         // create a new router and add it to the view's command chain
-                        CommandRouter router = new CommandRouter(view, textViewAdapter as IOleCommandTarget, CompletionBroker, dte);
+                        CommandRouter router = new CommandRouter(view, manager, textViewAdapter as IOleCommandTarget, CompletionBroker, dte);
 
                         System.Runtime.InteropServices.Marshal.ThrowExceptionForHR(textViewAdapter.AddCommandFilter(router, out nextCommandTarget));
 

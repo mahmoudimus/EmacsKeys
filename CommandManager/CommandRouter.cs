@@ -18,6 +18,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
     {
         LinkedList<IOleCommandTarget> _targets;
         ITextView _view;
+        EmacsCommandsManager _manager;
         IOleCommandTarget _viewCommandTarget;
         ICompletionBroker _completionBroker;
         DTE _dte;
@@ -32,10 +33,11 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
         /// </summary>
         public IOleCommandTarget Next { get; set; }
 
-        public CommandRouter(ITextView view, IOleCommandTarget viewCommandTarget, ICompletionBroker completionBroker, DTE dte)
+        public CommandRouter(ITextView view, EmacsCommandsManager manager, IOleCommandTarget viewCommandTarget, ICompletionBroker completionBroker, DTE dte)
         {
             _targets = new LinkedList<IOleCommandTarget>();
             _view = view;
+            _manager = manager;
             _completionBroker = completionBroker;
             _inExecute = false;
             _viewCommandTarget = viewCommandTarget;
@@ -65,7 +67,16 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
             this.ExecuteClosuredCommand(() =>
                 {
                     if (_dte != null)
-                        _dte.ExecuteCommand(visualStudioCommandName);
+                    {
+                        try
+                        {
+                            _dte.ExecuteCommand(visualStudioCommandName);
+                        }
+                        catch (Exception ex)
+                        {
+                            _manager.UpdateStatus(ex.Message);
+                        }
+                    }
                 });
         }
 

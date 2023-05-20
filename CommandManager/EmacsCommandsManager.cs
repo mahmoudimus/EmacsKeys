@@ -112,7 +112,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
                     var context = new EmacsCommandContext(
                         this, this.TextStructureNavigatorSelectorService,
                         this.EditorOperationsFactoryService.GetEditorOperations(view),
-                        view, CommandRouterProvider.GetCommandRouter(view));
+                        view, CommandRouterProvider.GetCommandRouter(view, this));
 
                     if (command != null)
                     {
