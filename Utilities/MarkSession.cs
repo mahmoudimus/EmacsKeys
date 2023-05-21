@@ -109,6 +109,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
         /// <param name="activateSession">False if the session should not be activated after pushing the mark</param>
         internal void PushMark(bool activateSession = true)
         {
+            DeactivateAfterSearch();
             this.PushMark(this.view.GetCaretPosition(), activateSession);
 
             if(activateSession)
@@ -117,7 +118,6 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
 
         private void PushMark(int position, bool activateSession = true)
         {
-            DeactivateAfterSearch();
             this.marks.Push(this.activeMark);
             this.activeMark = this.currentMark = this.CreateTrackingPoint(position);
 
