@@ -135,8 +135,81 @@
   </Commands>
 
 
+    <!--
+        KeyBinding section
+    -->
+
+  <KeyBindings>
+    <KeyBinding guid="guidEmacsEmulationsCmdSet"
+                id="cmdidRectangleMarkMode"
+                mod1="CONTROL" key1="X" key2="VK_SPACE"
+                editor="GUID_TextEditorFactory" />
+
+    <KeyBinding guid="guidEmacsEmulationsCmdSet"
+          id="cmdidSplitHorizontal"
+          mod1="CONTROL" key1="X" key2="3"
+          editor="GUID_TextEditorFactory" />
+
+    <KeyBinding guid="guidEmacsEmulationsCmdSet"
+          id="cmdidEnclosingPrevious"
+          mod1="CONTROL ALT" key1="VK_LEFT"
+          editor="GUID_TextEditorFactory" />
+
+    <KeyBinding guid="guidEmacsEmulationsCmdSet"
+          id="cmdidEnclosingPrevious"
+          mod1="CONTROL ALT" key1="B"
+          editor="GUID_TextEditorFactory" />
+
+    <KeyBinding guid="guidEmacsEmulationsCmdSet"
+          id="cmdidEnclosingNext"
+          mod1="CONTROL ALT" key1="VK_RIGHT"
+          editor="GUID_TextEditorFactory" />
+
+    <KeyBinding guid="guidEmacsEmulationsCmdSet"
+          id="cmdidEnclosingNext"
+          mod1="CONTROL ALT" key1="F"
+          editor="GUID_TextEditorFactory" />
+
+    <KeyBinding guid="guidEmacsEmulationsCmdSet"
+          id="cmdidEnclosingDeleteToEnd"
+          mod1="CONTROL ALT" key1="K"
+          editor="GUID_TextEditorFactory" />
+
+    <KeyBinding guid="guidEmacsEmulationsCmdSet"
+          id="cmdidEnclosingDeleteToStart"
+          mod1="CONTROL ALT" key1="VK_BACK"
+          editor="GUID_TextEditorFactory" />
+
+    <KeyBinding guid="guidEmacsEmulationsCmdSet"
+          id="cmdidEnclosingDeleteToStart"
+          mod1="CONTROL ALT" key1="VK_DELETE"
+          editor="GUID_TextEditorFactory" />
+
+    <KeyBinding guid="guidEmacsEmulationsCmdSet"
+          id="cmdidPreviousWindow"
+          mod1="CONTROL" key1="X" key2="VK_LEFT"
+          editor="GUID_TextEditorFactory" />
+
+    <KeyBinding guid="guidEmacsEmulationsCmdSet"
+          id="cmdidPreviousWindow"
+          mod1="CONTROL" key1="X" mod2="CONTROL" key2="VK_LEFT"
+          editor="GUID_TextEditorFactory" />
+
+    <KeyBinding guid="guidEmacsEmulationsCmdSet"
+          id="cmdidNextWindow"
+          mod1="CONTROL" key1="X" key2="VK_RIGHT"
+          editor="GUID_TextEditorFactory" />
+
+    <KeyBinding guid="guidEmacsEmulationsCmdSet"
+          id="cmdidNextWindow"
+          mod1="CONTROL" key1="X" mod2="CONTROL" key2="VK_RIGHT"
+          editor="GUID_TextEditorFactory" />
+  </KeyBindings>
 
 
+    <!--
+        Symbols section
+    -->
 
   <Symbols>
     <!-- This is the package guid. -->
