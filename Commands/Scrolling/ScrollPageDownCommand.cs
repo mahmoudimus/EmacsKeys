@@ -38,6 +38,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
                 !context.Manager.UniversalArgument.HasValue)
             {
                 // End of buffer reached. Do nothing
+                context.Manager.UpdateStatus("End of buffer");
                 return;
             }
 
@@ -61,14 +62,15 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
                     ViewRelativePosition.Top);
             }
 
-            if (caret.Top > context.TextView.ViewportTop && caret.Bottom < context.TextView.ViewportBottom)
+            var firstVisibleLine = context.TextView.GetFirstSufficientlyVisibleLine();
+            if (caret.ContainingTextViewLine.Start >= firstVisibleLine.Start)
             {
                 // Caret is in the viewport. Leave it as is
                 return;
             }
 
             // Move the caret to the top line
-            context.TextView.Caret.MoveTo(context.TextView.GetFirstSufficientlyVisibleLine().Start);
+            context.EditorOperations.MoveCaret(firstVisibleLine.Start);
         }
     }
 }
