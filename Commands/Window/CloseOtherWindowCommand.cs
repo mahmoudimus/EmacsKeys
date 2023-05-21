@@ -41,11 +41,11 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
                     // Close horizontal panes
                     if (documentWindows.Count > 1)
                     {
-                        for (int i = 1; i <= documentWindows.Count; i++)
+                        foreach (Window window in documentWindows)
                         {
-                            if (documentWindows.Item(i).Object !=  textWindow)
+                            if (window.Object !=  textWindow)
                             {
-                                documentWindows.Item(i).Close();
+                                window.Close();
                             }
                         }
                     }
