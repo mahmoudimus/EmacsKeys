@@ -196,7 +196,18 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
                 return newPosition;
             }
 
-            var enclosing = navigator.GetSpanOfEnclosing(word.Value);
+            SnapshotSpan enclosing;
+            try
+            {
+                enclosing = navigator.GetSpanOfEnclosing(word.Value);
+            }
+            catch (Exception)
+            {
+                // The navigator sometimes throw just after the buffer has been changed.
+                // Maybe it needs some time to recalculate the indexes?
+                // For now, use the word value instead
+                return word.Value.End;
+            }
 
             // Sometimes the start of the enclosing may be marked with spaces or newlines
             // Move beyond those to the first non-whitespace character
@@ -223,7 +234,18 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
                 return newPosition;
             }
 
-            var enclosing = navigator.GetSpanOfEnclosing(word.Value);
+            SnapshotSpan enclosing;
+            try
+            {
+                enclosing = navigator.GetSpanOfEnclosing(word.Value);
+            }
+            catch (Exception)
+            {
+                // The navigator sometimes throw just after the buffer has been changed.
+                // Maybe it needs some time to recalculate the indexes?
+                // For now, use the word value instead
+                return word.Value.End;
+            }
 
             if (position == enclosing.End || newPosition == enclosing.End)
             {
