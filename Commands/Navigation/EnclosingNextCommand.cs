@@ -18,8 +18,8 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
     ///
     /// Keys: Ctrl+Alt+Right Arrow | Ctrl+Alt+F
     /// </summary>
-    [EmacsCommand(EmacsCommandID.SExpressionNext, CanBeRepeated = true, InverseCommand = EmacsCommandID.SExpressionPrevious)]
-    internal class SExpressionNextCommand : EmacsCommand
+    [EmacsCommand(EmacsCommandID.EnclosingNext, CanBeRepeated = true, InverseCommand = EmacsCommandID.EnclosingPrevious)]
+    internal class EnclosingNextCommand : EmacsCommand
     {
         internal override void Execute(EmacsCommandContext context)
         {   

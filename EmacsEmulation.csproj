@@ -219,8 +219,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\Marks\RectangleMarkModeCommand.cs" />
-    <Compile Include="Commands\Navigation\SExpressionNextCommand.cs" />
-    <Compile Include="Commands\Navigation\SExpressionPreviousCommand.cs" />
+    <Compile Include="Commands\Navigation\EnclosingNextCommand.cs" />
+    <Compile Include="Commands\Navigation\EnclosingPreviousCommand.cs" />
     <Compile Include="Commands\Window\SplitHorizontalCommand.cs" />
     <Compile Include="Utilities\ClipboardRing.cs" />
     <Compile Include="CommandManager\CommandRouter.cs" />

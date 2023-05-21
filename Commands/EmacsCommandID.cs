@@ -66,7 +66,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
         RectangleMarkMode = 0x3C,
 
         SplitHorizontal = 0x40,
-        SExpressionPrevious = 0x41,
-        SExpressionNext = 0x42
+        EnclosingPrevious = 0x41,
+        EnclosingNext = 0x42
     }
 }
