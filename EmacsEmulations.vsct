@@ -85,6 +85,22 @@
               <ButtonText>EmacsEnclosingNext</ButtonText>
           </Strings>
       </Button>
+
+      <Button guid="guidEmacsEmulationsCmdSet" id="cmdidEnclosingDeleteToEnd" priority="0x0100" type="Button">
+          <Parent guid="guidEmacsEmulationsCmdSet" id="EmacsEmulationsMenuGroup" />
+          <CommandFlag>CommandWellOnly</CommandFlag>
+          <Strings>
+              <ButtonText>EmacsEnclosingDeleteToEnd</ButtonText>
+          </Strings>
+      </Button>
+
+      <Button guid="guidEmacsEmulationsCmdSet" id="cmdidEnclosingDeleteToStart" priority="0x0100" type="Button">
+          <Parent guid="guidEmacsEmulationsCmdSet" id="EmacsEmulationsMenuGroup" />
+          <CommandFlag>CommandWellOnly</CommandFlag>
+          <Strings>
+              <ButtonText>EmacsEnclosingDeleteToStart</ButtonText>
+          </Strings>
+      </Button>
     </Buttons>
 
 
@@ -117,6 +133,8 @@
       <IDSymbol name="cmdidSplitHorizontal" value="0x40" />
       <IDSymbol name="cmdidEnclosingPrevious" value="0x41" />
       <IDSymbol name="cmdidEnclosingNext" value="0x42" />
+      <IDSymbol name="cmdidEnclosingDeleteToEnd" value="0x43" />
+      <IDSymbol name="cmdidEnclosingDeleteToStart" value="0x44" />
     </GuidSymbol>
 
 

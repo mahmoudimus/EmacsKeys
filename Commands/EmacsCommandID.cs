@@ -67,6 +67,8 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
 
         SplitHorizontal = 0x40,
         EnclosingPrevious = 0x41,
-        EnclosingNext = 0x42
+        EnclosingNext = 0x42,
+        EnclosingDeleteToEnd = 0x43,
+        EnclosingDeleteToStart = 0x44
     }
 }
