@@ -117,6 +117,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
 
         private void PushMark(int position, bool activateSession = true)
         {
+            DeactivateAfterSearch();
             this.marks.Push(this.activeMark);
             this.activeMark = this.currentMark = this.CreateTrackingPoint(position);
 
