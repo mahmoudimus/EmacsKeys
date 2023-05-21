@@ -186,6 +186,66 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
             editorOperations.MoveCaret(GetPreviousNonWhiteSpaceCharacter(editorOperations));
         }
 
+        internal static SnapshotPoint GetNextEnclosing(this IEditorOperations editorOperations, SnapshotPoint position, ITextStructureNavigator navigator)
+        {
+            var newPosition = editorOperations.GetNextNonWhiteSpaceCharacter(position);
+            var word = navigator.GetNextWord(newPosition);
+
+            if (!word.HasValue)
+            {
+                return newPosition;
+            }
+
+            var enclosing = navigator.GetSpanOfEnclosing(word.Value);
+
+            // Sometimes the start of the enclosing may be marked with spaces or newlines
+            // Move beyond those to the first non-whitespace character
+            var startEnclosing = editorOperations.GetNextNonWhiteSpaceCharacter(enclosing.Start);
+
+            if (position == startEnclosing || newPosition == startEnclosing)
+            {
+                // The caret is at the beginning of an enclosing
+                // Return the end of the enclosing.
+                return enclosing.End;
+            }
+            // The caret is in the middle of an enclosing
+            // Move it to the end of the word
+            return word.Value.End;
+        }
+
+        internal static SnapshotPoint GetPreviousEnclosing(this IEditorOperations editorOperations, SnapshotPoint position, ITextStructureNavigator navigator)
+        {
+            var newPosition = editorOperations.GetPreviousNonWhiteSpaceCharacter(position);
+            var word = navigator.GetPreviousWord(newPosition);
+
+            if (!word.HasValue)
+            {
+                return newPosition;
+            }
+
+            var enclosing = navigator.GetSpanOfEnclosing(word.Value);
+
+            if (position == enclosing.End || newPosition == enclosing.End)
+            {
+                // The caret is at the end of an enclosing
+                // Return the beginning of the enclosing
+                return enclosing.Start;
+            }
+            // The caret is in the middle of an enclosing
+            // Move it to the beginning of the word
+            return word.Value.Start;
+        }
+
+        internal static SnapshotPoint GetNextEnclosing(this IEditorOperations editorOperations, ITextStructureNavigator navigator)
+        {
+            return GetNextEnclosing(editorOperations, editorOperations.TextView.Caret.Position.BufferPosition, navigator);
+        }
+
+        internal static SnapshotPoint GetPreviousEnclosing(this IEditorOperations editorOperations, ITextStructureNavigator navigator)
+        {
+            return GetPreviousEnclosing(editorOperations, editorOperations.TextView.Caret.Position.BufferPosition, navigator);
+        }
+
         internal static void MoveToEndOfLine(this IEditorOperations editorOperations)
         {
             editorOperations.MoveToEndOfLine(ShouldExtendSelection(editorOperations));

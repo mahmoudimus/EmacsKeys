@@ -22,33 +22,9 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
     internal class EnclosingNextCommand : EmacsCommand
     {
         internal override void Execute(EmacsCommandContext context)
-        {   
-            var startPosition = context.TextView.GetCaretPosition();
-            context.EditorOperations.MoveToNextNonWhiteSpaceCharacter();
-
-            var word = context.TextStructureNavigator.GetNextWord(context.TextView);
-
-            if (word.HasValue)
-            {
-                var enclosing = context.TextStructureNavigator.GetSpanOfEnclosing(word.Value);
-
-                // Sometimes the start of the enclosing may be marked with spaces or newlines
-                // Move beyond those to the first non-whitespace character
-                var startEnclosing = context.EditorOperations.GetNextNonWhiteSpaceCharacter(enclosing.Start);
-
-                if (startPosition == startEnclosing || context.TextView.GetCaretPosition() == startEnclosing)
-                {
-                    // The caret is at the beginning of an enclosing
-                    // Move it to the end.
-                    context.EditorOperations.MoveCaret(enclosing.End);
-                }
-                else
-                {
-                    // The caret is in the middle of an enclosing
-                    // Move it to the end of the word
-                    context.EditorOperations.MoveCaret(word.Value.End);
-                }
-            }
+        {
+            var position = context.EditorOperations.GetNextEnclosing(context.TextStructureNavigator);
+            context.EditorOperations.MoveCaret(position);
         }
     }
 }

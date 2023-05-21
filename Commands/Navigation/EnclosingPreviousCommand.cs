@@ -23,32 +23,13 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
     {
         internal override void Execute(EmacsCommandContext context)
         {
-            var startPosition = context.TextView.GetCaretPosition();
-            context.EditorOperations.MoveToPreviousNonWhiteSpaceCharacter();
-
-            var word = context.TextStructureNavigator.GetPreviousWord(context.TextView);
-
-            if (word.HasValue)
-            {
-                var enclosing = context.TextStructureNavigator.GetSpanOfEnclosing(word.Value);
-                if (startPosition == enclosing.End || context.TextView.GetCaretPosition() == enclosing.End)
-                {
-                    // The caret is at the end of an enclosing
-                    // Move it to the beginning.
-                    context.EditorOperations.MoveCaret(enclosing.Start);
-                    // Sometimes the start of the enclosing may be marked with spaces or newlines
-                    // Move beyond those to the first non-whitespace character
-                    context.EditorOperations.MoveToNextNonWhiteSpaceCharacter();
-                    // NOTE: moving in two steps ensures that the start of the enclosure remains
-                    // visible within the final buffer
-                }
-                else
-                {
-                    // The caret is in the middle of an enclosing
-                    // Move it to the beginning of the word
-                    context.EditorOperations.MoveCaret(word.Value.Start);
-                }
-            }
+            var position = context.EditorOperations.GetPreviousEnclosing(context.TextStructureNavigator);
+            context.EditorOperations.MoveCaret(position);
+            // Sometimes the start of the enclosing may be marked with spaces or newlines
+            // Move beyond those to the first non-whitespace character
+            // Moving in two steps ensures that the start of the enclosure remains
+            // visible within the final buffer
+            context.EditorOperations.MoveToNextNonWhiteSpaceCharacter();
         }
     }
 }
