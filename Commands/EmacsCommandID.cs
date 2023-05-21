@@ -69,6 +69,8 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
         EnclosingPrevious = 0x41,
         EnclosingNext = 0x42,
         EnclosingDeleteToEnd = 0x43,
-        EnclosingDeleteToStart = 0x44
+        EnclosingDeleteToStart = 0x44,
+        PreviousWindow = 0x45,
+        NextWindow = 0x46
     }
 }

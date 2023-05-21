@@ -223,6 +223,8 @@
     <Compile Include="Commands\Navigation\EnclosingPreviousCommand.cs" />
     <Compile Include="Commands\Text\EnclosingDeleteToEndCommand.cs" />
     <Compile Include="Commands\Text\EnclosingDeleteToStartCommand.cs" />
+    <Compile Include="Commands\Window\NextWindowCommand.cs" />
+    <Compile Include="Commands\Window\PreviousWindowCommand.cs" />
     <Compile Include="Commands\Window\SplitHorizontalCommand.cs" />
     <Compile Include="Utilities\ClipboardRing.cs" />
     <Compile Include="CommandManager\CommandRouter.cs" />
