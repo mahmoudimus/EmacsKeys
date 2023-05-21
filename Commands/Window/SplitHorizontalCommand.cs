@@ -25,8 +25,15 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
     {
         internal override void Execute(EmacsCommandContext context)
         {
-            context.CommandRouter.ExecuteDTECommand("Window.NewWindow");
-            context.CommandRouter.ExecuteDTECommand("Window.NewVerticalTabGroup");
+            ThreadHelper.ThrowIfNotOnUIThread();
+            DTE vs = context.Manager.ServiceProvider.GetService<DTE>();
+
+            if (vs.ActiveDocument != null && vs.ActiveDocument.ActiveWindow != null)
+            {
+                context.Manager.StashView = context.TextView;
+                vs.ActiveDocument.NewWindow().Activate();
+                context.CommandRouter.ExecuteDTECommand("Window.NewVerticalTabGroup");
+            }
         }
     }
 }

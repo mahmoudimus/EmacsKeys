@@ -312,6 +312,8 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
 
         public bool AfterSearch { get; set; }
 
+        public ITextView StashView { get; set; }
+
         public MarkSession GetOrCreateMarkSession(ITextView view)
         {
             return view.Properties.GetOrCreateSingletonProperty<MarkSession>(() => new MarkSession(view, this));

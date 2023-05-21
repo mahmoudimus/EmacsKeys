@@ -34,6 +34,17 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
         public void VsTextViewCreated(Microsoft.VisualStudio.TextManager.Interop.IVsTextView textViewAdapter)
         {
             var view = this.EditorAdaptersFactory.GetWpfTextView(textViewAdapter);
+            if (Manager.StashView != null)
+            {
+                view.Caret.MoveTo(Manager.StashView.GetCaretPosition());
+                var firstLine = Manager.StashView.TextViewLines.FirstVisibleLine;
+                if (view.TextViewLines.FirstVisibleLine.Start != firstLine.Start)
+                {
+                    view.DisplayTextLineContainingBufferPosition(
+                        firstLine.Start, 0, ViewRelativePosition.Top);
+                }
+                Manager.StashView = null;
+            }
             view.Options.OptionChanged += OnOptionsChanged;
 
             IOleCommandTarget nextCommandTarget;

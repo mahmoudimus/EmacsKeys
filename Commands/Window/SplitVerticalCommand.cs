@@ -50,6 +50,9 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
                             context.TextView.ViewportWidth, viewHeight / 2.0);
                     }
 
+                    // TODO: setting the below should manage the caret position on the newly
+                    // created pane. However, it is currently not showing the desired behavior...
+                    // context.Manager.StashView = context.TextView;
                     context.CommandRouter.ExecuteDTECommand("Window.Split");
                 }
                 else
