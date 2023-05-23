@@ -45,7 +45,9 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
                 }
                 Manager.StashView = null;
             }
+
             view.Options.OptionChanged += OnOptionsChanged;
+            view.GotAggregateFocus += Manager.GetOrCreateMarkSession(view).OnGotAggregateFocus;
 
             IOleCommandTarget nextCommandTarget;
 

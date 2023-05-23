@@ -78,12 +78,22 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
                         return VSConstants.S_OK;
                     }
                     else if (pguidCmdGroup == VSConstants.VSStd2K &&
-                        (nCmdID == (uint)VSConstants.VSStd2KCmdID.ISEARCH || nCmdID == (uint)VSConstants.VSStd2KCmdID.ISEARCHBACK) ||
-                             pguidCmdGroup == VSConstants.GUID_VSStandardCommandSet97 &&
+                        (nCmdID == (uint)VSConstants.VSStd2KCmdID.ISEARCH || nCmdID == (uint)VSConstants.VSStd2KCmdID.ISEARCHBACK))
+                    {
+                        MarkSession.GetSession(view).AfterSearch = true;
+                    }
+                    else if (pguidCmdGroup == VSConstants.GUID_VSStandardCommandSet97 &&
                         (nCmdID == (uint)VSConstants.VSStd97CmdID.GotoDefn || nCmdID == (uint)VSConstants.VSStd97CmdID.GotoDecl))
                     {
+                        // GotoDefn and GotoDecl determine the search result by the looking at the symbol at the
+                        // start of the selection, and can highlight the results in the current or in another view.
+
+                        // First, clear the selection to make sure that the search will be performed using the symbol under the caret
                         MarkSession.GetSession(view).PushMark();
-                        manager.AfterSearch = true;
+                        // Then, set the AfterSearch flag to indicate that the next selection result should not be extended by default
+                        this.manager.AfterSearch = true;
+                        // Finally, use the manager object to propagate the AfterSearch flag to potential text views activated by the search command.
+                        MarkSession.GetSession(view).AfterSearch = true;
                     }
                 }
             }

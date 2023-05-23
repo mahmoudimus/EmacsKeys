@@ -33,7 +33,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
             // i.e. if ARG is positive, or if the Rectangle-Mark mode is not enabled
             // and no arguments were passed
 
-            if (!context.MarkSession.IsActive || context.Manager.AfterSearch)
+            if (!context.MarkSession.IsActive || context.MarkSession.AfterSearch)
             {
                 // Activate the region if needed
                 context.MarkSession.PushMark();

@@ -39,6 +39,15 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
             }
         }
 
+        public void OnGotAggregateFocus(object sender, EventArgs e)
+        {
+            if (this.manager.AfterSearch != false)
+            {
+                this.manager.AfterSearch = false;
+                this.AfterSearch = true;
+            }
+        }
+
         private void UpdateSelection()
         {
             if (this.IsActive)
@@ -56,7 +65,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
         }
 
         /// <summary>
-        /// Gets true the mark session is active
+        /// Gets true when the mark session is active
         /// </summary>
         internal bool IsActive
         {
@@ -65,13 +74,18 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
         }
 
         /// <summary>
+        /// Gets true when the current selection is the result of a search operation
+        /// </summary>
+        public bool AfterSearch { get; set; }
+
+        /// <summary>
         /// Deactivates the selection after search operations.
         /// Search operations automatically create a selection to highlight the text,
         /// but this should not be considered during move operations.
         /// </summary>
         internal void DeactivateAfterSearch()
         {
-            if (this.manager.AfterSearch)
+            if (this.AfterSearch)
             {
                 // Ideally, search operations within the same file would expand previous selections.
                 // However, e.g. Edit.IncrementalSearch already deactivates the selection by default,
@@ -243,7 +257,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
                 this.ClearSelection();
             }
             this.IsActive = false;
-            this.manager.AfterSearch = false;
+            this.AfterSearch = false;
         }
 
         int IOleCommandTarget.QueryStatus(ref Guid pguidCmdGroup, uint cCmds, OLECMD[] prgCmds, IntPtr pCmdText)
