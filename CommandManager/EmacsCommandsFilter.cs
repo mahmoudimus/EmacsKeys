@@ -92,10 +92,12 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
                         // First, clear the selection to make sure that the search will be performed using the symbol
                         // under the caret (i.e. at the end of the current selection, if any)
                         MarkSession.GetSession(view).PushMark();
+
                         // Then, set the AfterSearch flag to indicate that the next selection result should not be extended by default
                         this.manager.AfterSearch = true;
+
                         // Finally, use the manager object to propagate the AfterSearch flag to potential text views activated by the search command.
-                        // The manager AfterSearch flag is transfered to a MarkSession object when the focus is switched to another view.
+                        // The manager AfterSearch flag is transfered to a MarkSession object during the SelectionChanged event
                         MarkSession.GetSession(view).AfterSearch = true;
                     }
                 }

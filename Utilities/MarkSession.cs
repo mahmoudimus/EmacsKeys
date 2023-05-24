@@ -37,11 +37,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
             {
                 PushMark(view.Selection.Start.Position.Position);
             }
-        }
-
-        public void OnGotAggregateFocus(object sender, EventArgs e)
-        {
-            if (this.manager.AfterSearch != false)
+            if (this.manager.AfterSearch)
             {
                 this.manager.AfterSearch = false;
                 this.AfterSearch = true;
