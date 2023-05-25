@@ -226,6 +226,7 @@
     <Compile Include="Commands\Window\NextWindowCommand.cs" />
     <Compile Include="Commands\Window\PreviousWindowCommand.cs" />
     <Compile Include="Commands\Window\SplitHorizontalCommand.cs" />
+    <Compile Include="Commands\Window\SwitchWindowCommand.cs" />
     <Compile Include="Utilities\ClipboardRing.cs" />
     <Compile Include="CommandManager\CommandRouter.cs" />
     <Compile Include="CommandManager\CommandRouterProvider.cs" />
