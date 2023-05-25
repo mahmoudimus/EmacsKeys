@@ -23,10 +23,10 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
     {
         internal override void Execute(EmacsCommandContext context)
         {
-            // EditorOpertion.MovePreviousWord is not working as expected for our spec.
-            // For example: When the caret is in the middle of a word this command should
-            // move the caret to the beginning of the same word. EditorOperations moves the 
-            // caret to the previous word instead.
+            // EditorOperations.MovePreviousWord is not working as expected for our spec.
+            // For example: When the caret is at the indent position of a line, this command
+            // move the caret to the beginning of the previous word in the previous line.
+            // EditorOperations moves the caret to the beggining of the line instead.
 
             var word = context.TextStructureNavigator.GetPreviousWord(context.TextView);
 

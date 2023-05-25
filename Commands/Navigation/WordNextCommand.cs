@@ -24,7 +24,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
     {
         internal override void Execute(EmacsCommandContext context)
         {
-            // EditorOpertion.MoveNextWord is not working as expected for our spec.
+            // EditorOperations.MoveNextWord is not working as expected for our spec.
             // For example: When the caret is in the middle of a word this command should
             // move the caret to the end of the same word. EditorOperations moves the caret
             // to the next word instead.
