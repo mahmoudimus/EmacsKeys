@@ -219,6 +219,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\Marks\RectangleMarkModeCommand.cs" />
+    <Compile Include="Commands\Navigation\BackToIndentationCommand.cs" />
     <Compile Include="Commands\Navigation\EnclosingNextCommand.cs" />
     <Compile Include="Commands\Navigation\EnclosingPreviousCommand.cs" />
     <Compile Include="Commands\Text\EnclosingDeleteToEndCommand.cs" />

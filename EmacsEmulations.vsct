@@ -125,6 +125,14 @@
               <ButtonText>EmacsSwitchWindow</ButtonText>
           </Strings>
       </Button>
+
+      <Button guid="guidEmacsEmulationsCmdSet" id="cmdidBackToIndentation" priority="0x0100" type="Button">
+          <Parent guid="guidEmacsEmulationsCmdSet" id="EmacsEmulationsMenuGroup" />
+          <CommandFlag>CommandWellOnly</CommandFlag>
+          <Strings>
+              <ButtonText>EmacsBackToIndentation</ButtonText>
+          </Strings>
+      </Button>
     </Buttons>
 
 
@@ -217,6 +225,11 @@
           id="cmdidSwitchWindow"
           mod1="CONTROL" key1="X" key2="B"
           editor="GUID_TextEditorFactory" />
+
+    <KeyBinding guid="guidEmacsEmulationsCmdSet"
+          id="cmdidBackToIndentation"
+          mod1="ALT" key1="M"
+          editor="GUID_TextEditorFactory" />
   </KeyBindings>
 
 
@@ -240,6 +253,7 @@
       <IDSymbol name="cmdidPreviousWindow" value="0x45" />
       <IDSymbol name="cmdidNextWindow" value="0x46" />
       <IDSymbol name="cmdidSwitchWindow" value="0x47" />
+      <IDSymbol name="cmdidBackToIndentation" value="0x48" />
 
     </GuidSymbol>
 

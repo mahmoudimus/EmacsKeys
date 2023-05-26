@@ -72,6 +72,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
         EnclosingDeleteToStart = 0x44,
         PreviousWindow = 0x45,
         NextWindow = 0x46,
-        SwitchWindow = 0x47
+        SwitchWindow = 0x47,
+        BackToIndentation = 0x48
     }
 }
