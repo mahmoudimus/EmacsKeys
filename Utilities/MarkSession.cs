@@ -42,6 +42,10 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
                 this.manager.AfterSearch = false;
                 this.AfterSearch = true;
             }
+            if (this.ContinuousSelectionMode)
+            {
+                UpdateSelection();
+            }
         }
 
         private void UpdateSelection()
@@ -71,8 +75,15 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
 
         /// <summary>
         /// Gets true when the current selection is the result of a search operation
+        /// This flag is used to avoid automatically extending selections resulting from search results
         /// </summary>
         public bool AfterSearch { get; set; }
+
+        /// <summary>
+        /// Gets true when the current selection should be rendered after each selection change
+        /// This flag is used to interactively display the selection within incremental searches
+        /// </summary>
+        public bool ContinuousSelectionMode { get; set; }
 
         /// <summary>
         /// Deactivates the selection after search operations.
@@ -248,12 +259,16 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
 
         public void Deactivate(bool clearSelection = true)
         {
+            // Deactivate all flags used in SelectionChanged events before any
+            // potential selection updates (i.e. ClearSelection())
+            this.AfterSearch = false;
+            this.ContinuousSelectionMode = false;
+
             if (clearSelection)
             {
                 this.ClearSelection();
             }
             this.IsActive = false;
-            this.AfterSearch = false;
         }
 
         int IOleCommandTarget.QueryStatus(ref Guid pguidCmdGroup, uint cCmds, OLECMD[] prgCmds, IntPtr pCmdText)

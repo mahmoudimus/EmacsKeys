@@ -37,6 +37,18 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
 
                 if (command != null)
                 {
+                    // Make sure that MarkSession.ContinuousSelectionMode is set to false.
+                    // This flag is used to update the selection during incremental search.
+                    // HACK: Since we cannot detect when the search command has finished,
+                    // set the flag to false at the beggining of each command.
+                    {
+                        var session = MarkSession.GetSession(view);
+                        if (session != null)
+                        {
+                            session.ContinuousSelectionMode = false;
+                        }
+                    }
+
                     try
                     {
                         // we did find a match so we execute the corresponding command
@@ -78,9 +90,25 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
                         return VSConstants.S_OK;
                     }
                     else if ((pguidCmdGroup == VSConstants.VSStd2K &&
-                        (nCmdID == (uint)VSConstants.VSStd2KCmdID.ISEARCH || nCmdID == (uint)VSConstants.VSStd2KCmdID.ISEARCHBACK)) ||
-                        (pguidCmdGroup == VSConstants.GUID_VSStandardCommandSet97 && nCmdID == (uint)VSConstants.VSStd97CmdID.Find))
+                        (nCmdID == (uint)VSConstants.VSStd2KCmdID.ISEARCH || nCmdID == (uint)VSConstants.VSStd2KCmdID.ISEARCHBACK)))
                     {
+                        var session = MarkSession.GetSession(view);
+                        if (session.IsActive)
+                        {
+                            // If there is already a selection, expand that selection interactively with each search operation
+                            session.ContinuousSelectionMode = true;
+                        }
+                        else
+                        {
+                            // If there is no active selection, tell the MarkSession to avoid expanding the incoming selection,
+                            // which is used only to highlight the search result
+                            session.AfterSearch = true;
+                        }
+                    }
+                    else if (pguidCmdGroup == VSConstants.GUID_VSStandardCommandSet97 && nCmdID == (uint)VSConstants.VSStd97CmdID.Find)
+                    {
+                        // When a selection is active, the Find command searches for strings within the selection
+                        // Leave this behavior as is, but avoid the automatic expansion of search results
                         MarkSession.GetSession(view).AfterSearch = true;
                     }
                     else if (pguidCmdGroup == VSConstants.GUID_VSStandardCommandSet97 &&
