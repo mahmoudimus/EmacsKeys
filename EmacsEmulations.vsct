@@ -224,7 +224,7 @@
     <KeyBinding guid="guidEmacsEmulationsCmdSet"
           id="cmdidSwitchWindow"
           mod1="CONTROL" key1="X" key2="B"
-          editor="GUID_TextEditorFactory" />
+          editor="guidVSStd97" />
 
     <KeyBinding guid="guidEmacsEmulationsCmdSet"
           id="cmdidBackToIndentation"
@@ -243,6 +243,11 @@
       id="cmdidNavigateToFile"
       mod1="CONTROL" key1="X" key2="F"
       editor="GUID_TextEditorFactory" />
+
+      <KeyBinding guid="guidVSStd15"
+      id="cmdidNavigateToFile"
+      mod1="CONTROL" key1="X" key2="F"
+      editor="guidVSStd97" />
 
     <KeyBinding guid="guidVSStd2K"
       id="ECMD_DELETELINE"
