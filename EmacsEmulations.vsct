@@ -230,6 +230,39 @@
           id="cmdidBackToIndentation"
           mod1="ALT" key1="M"
           editor="GUID_TextEditorFactory" />
+
+    <!--
+        Bindings to existing VS commands
+    -->
+    <KeyBinding guid="guidVSStd97"
+        id="cmdidDelete"
+        mod1="CONTROL" key1="H"
+        editor="GUID_TextEditorFactory" />
+
+    <KeyBinding guid="guidVSStd15"
+      id="cmdidNavigateToFile"
+      mod1="CONTROL" key1="X" key2="F"
+      editor="GUID_TextEditorFactory" />
+
+    <KeyBinding guid="guidVSStd2K"
+      id="ECMD_DELETELINE"
+      mod1="CONTROL SHIFT" key1="VK_BACK"
+      editor="GUID_TextEditorFactory" />
+
+    <KeyBinding guid="guidVSStd97"
+      id="cmdidSelectAll"
+      mod1="CONTROL" key1="X" key2="H"
+      editor="GUID_TextEditorFactory" />
+
+    <KeyBinding guid="guidVSStd2K"
+      id="ECMD_SELUPCASE"
+      mod1="CONTROL" key1="X" mod2="CONTROL" key2="U"
+      editor="GUID_TextEditorFactory" />
+
+    <KeyBinding guid="guidVSStd2K"
+      id="ECMD_SELLOWCASE"
+      mod1="CONTROL" key1="X" mod2="CONTROL" key2="L"
+      editor="GUID_TextEditorFactory" />
   </KeyBindings>
 
 
