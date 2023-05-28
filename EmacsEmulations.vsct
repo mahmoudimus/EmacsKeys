@@ -149,6 +149,14 @@
               <ButtonText>EmacsParagraphNext</ButtonText>
           </Strings>
       </Button>
+
+      <Button guid="guidEmacsEmulationsCmdSet" id="cmdidSelectAll" priority="0x0100" type="Button">
+          <Parent guid="guidEmacsEmulationsCmdSet" id="EmacsEmulationsMenuGroup" />
+          <CommandFlag>CommandWellOnly</CommandFlag>
+          <Strings>
+              <ButtonText>EmacsSelectAll</ButtonText>
+          </Strings>
+      </Button>
     </Buttons>
 
 
@@ -247,6 +255,11 @@
           mod1="ALT" key1="M"
           editor="GUID_TextEditorFactory" />
 
+    <KeyBinding guid="guidEmacsEmulationsCmdSet"
+      id="cmdidSelectAll"
+      mod1="CONTROL" key1="X" key2="H"
+      editor="GUID_TextEditorFactory" />
+
     <!--
         Bindings to existing VS commands
     -->
@@ -268,11 +281,6 @@
     <KeyBinding guid="guidVSStd2K"
       id="ECMD_DELETELINE"
       mod1="CONTROL SHIFT" key1="VK_BACK"
-      editor="GUID_TextEditorFactory" />
-
-    <KeyBinding guid="guidVSStd97"
-      id="cmdidSelectAll"
-      mod1="CONTROL" key1="X" key2="H"
       editor="GUID_TextEditorFactory" />
 
     <KeyBinding guid="guidVSStd2K"
@@ -310,6 +318,7 @@
       <IDSymbol name="cmdidBackToIndentation" value="0x48" />
       <IDSymbol name="cmdidParagraphPrevious" value="0x49" />
       <IDSymbol name="cmdidParagraphNext" value="0x50" />
+      <IDSymbol name="cmdidSelectAll" value="0x51" />
 
     </GuidSymbol>
 

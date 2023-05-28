@@ -76,5 +76,6 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
         BackToIndentation = 0x48,
         ParagraphPrevious = 0x49,
         ParagraphNext = 0x50,
+        SelectAll = 0x51,
     }
 }
