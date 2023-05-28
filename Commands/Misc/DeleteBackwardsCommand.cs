@@ -28,20 +28,15 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
         {
             var caretPosition = context.TextView.GetCaretPosition().Position;
 
-            if (caretPosition > 0)
+            if (caretPosition > 0 &&
+                context.TextBuffer.CurrentSnapshot.GetText(context.TextView.GetCaretPosition() - 1, 1) == "\t")
             {
-                if (context.TextBuffer.CurrentSnapshot.GetText(context.TextView.GetCaretPosition() - 1, 1) == "\t")
-                {
-                    context.TextView.Selection.Select(new Text.SnapshotSpan(context.TextView.TextSnapshot, new Span(caretPosition - 1, 1)), false);
-                    context.EditorOperations.ConvertTabsToSpaces();
-                    context.MarkSession.Deactivate();
-                    context.EditorOperations.Backspace();
-                }
-                else
-                {
-                    context.EditorOperations.Backspace();
-                }
+                context.TextView.Selection.Select(new Text.SnapshotSpan(context.TextView.TextSnapshot, new Span(caretPosition - 1, 1)), false);
+                context.EditorOperations.ConvertTabsToSpaces();
+                context.MarkSession.Deactivate();
             }
+
+            context.EditorOperations.Backspace();
         }
 
         internal override void ExecuteInverse(EmacsCommandContext context)
