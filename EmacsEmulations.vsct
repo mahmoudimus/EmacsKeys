@@ -271,8 +271,8 @@
     <!--
         Bindings to existing VS commands
     -->
-    <KeyBinding guid="guidVSStd97"
-        id="cmdidDelete"
+    <KeyBinding guid="guidVSStd2K"
+        id="ECMD_BACKSPACE"
         mod1="CONTROL" key1="H"
         editor="GUID_TextEditorFactory" />
 
