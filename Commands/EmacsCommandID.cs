@@ -77,5 +77,6 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
         ParagraphPrevious = 0x49,
         ParagraphNext = 0x50,
         SelectAll = 0x51,
+        JoinLines = 0x52,
     }
 }

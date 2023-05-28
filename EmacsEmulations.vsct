@@ -157,6 +157,14 @@
               <ButtonText>EmacsSelectAll</ButtonText>
           </Strings>
       </Button>
+
+      <Button guid="guidEmacsEmulationsCmdSet" id="cmdidJoinLines" priority="0x0100" type="Button">
+          <Parent guid="guidEmacsEmulationsCmdSet" id="EmacsEmulationsMenuGroup" />
+          <CommandFlag>CommandWellOnly</CommandFlag>
+          <Strings>
+              <ButtonText>EmacsJoinLines</ButtonText>
+          </Strings>
+      </Button>
     </Buttons>
 
 
@@ -319,6 +327,7 @@
       <IDSymbol name="cmdidParagraphPrevious" value="0x49" />
       <IDSymbol name="cmdidParagraphNext" value="0x50" />
       <IDSymbol name="cmdidSelectAll" value="0x51" />
+      <IDSymbol name="cmdidJoinLines" value="0x52" />
 
     </GuidSymbol>
 
