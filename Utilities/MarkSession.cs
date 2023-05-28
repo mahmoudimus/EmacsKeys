@@ -171,7 +171,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
                 this.currentMark = activeMark = CreateTrackingPoint(0);
             }
 
-            this.view.Caret.MoveTo(currentMark.GetPoint(this.view.TextSnapshot));
+            this.view.Caret.MoveTo(activeMark.GetPoint(this.view.TextSnapshot));
             this.UpdateSelection();
         }
 
