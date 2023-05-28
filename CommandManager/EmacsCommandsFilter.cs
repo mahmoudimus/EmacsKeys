@@ -93,7 +93,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
                         (nCmdID == (uint)VSConstants.VSStd2KCmdID.ISEARCH || nCmdID == (uint)VSConstants.VSStd2KCmdID.ISEARCHBACK)))
                     {
                         var session = MarkSession.GetSession(view);
-                        if (session.IsActive)
+                        if (session.IsActiveAndValid())
                         {
                             // If there is already a selection, expand that selection interactively with each search operation
                             session.ContinuousSelectionMode = true;

@@ -23,7 +23,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
         {
             ITextSelection selection = context.TextView.Selection;
             bool trackCaret = true;
-            bool markSessionActive = context.MarkSession.IsActive;
+            bool markSessionActive = context.MarkSession.IsActiveAndValid();
 
             // Return immediately if the buffer is read-only.
             if (context.TextBuffer.IsReadOnly(selection.Start.Position.GetContainingLine().Extent))

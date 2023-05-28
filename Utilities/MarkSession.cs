@@ -65,6 +65,14 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
         }
 
         /// <summary>
+        /// Returns true when the mark session is active and the selection does not correspond to a search result
+        /// </summary>
+        internal bool IsActiveAndValid()
+        {
+            return (this.IsActive && !this.AfterSearch);
+        }
+
+        /// <summary>
         /// Gets true when the mark session is active
         /// </summary>
         internal bool IsActive

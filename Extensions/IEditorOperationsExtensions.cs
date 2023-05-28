@@ -16,7 +16,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
         {
             var session = MarkSession.GetSession(editorOperations.TextView);
             session.DeactivateAfterSearch();
-            return session.IsActive;
+            return session.IsActiveAndValid();
         }
 
         internal static void MoveToTopOfView(this IEditorOperations editorOperations)
