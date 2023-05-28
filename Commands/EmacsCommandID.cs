@@ -73,6 +73,8 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
         PreviousWindow = 0x45,
         NextWindow = 0x46,
         SwitchWindow = 0x47,
-        BackToIndentation = 0x48
+        BackToIndentation = 0x48,
+        ParagraphPrevious = 0x49,
+        ParagraphNext = 0x50,
     }
 }
