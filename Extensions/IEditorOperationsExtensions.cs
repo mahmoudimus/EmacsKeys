@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using Microsoft.VisualStudio.Text.Operations;
 using Microsoft.VisualStudio.Text.Formatting;
 using Microsoft.VisualStudio.Text.Editor;
+using EnvDTE;
 
 namespace Microsoft.VisualStudio.Editor.EmacsEmulation
 {
@@ -186,86 +187,80 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
             editorOperations.MoveCaret(GetPreviousNonWhiteSpaceCharacter(editorOperations));
         }
 
-        internal static SnapshotPoint GetNextEnclosing(this IEditorOperations editorOperations, SnapshotPoint position, ITextStructureNavigator navigator)
+        internal static SnapshotPoint GetPairPosition(this IEditorOperations editorOperations, SnapshotPoint position, DTE dte)
         {
-            var newPosition = editorOperations.GetNextNonWhiteSpaceCharacter(position);
-            var word = navigator.GetNextWord(newPosition);
+            // TODO: call IVsTextViewFilter.GetPairExtents directly to avoid
+            // unnecessary dte calls and caret operations
 
-            if (!word.HasValue)
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
+            var caretPosition = editorOperations.TextView.GetCaretPosition();
+            editorOperations.TextView.Caret.MoveTo(position);
+            dte.ExecuteCommand("Edit.GotoBrace");
+            var matchingPosition = editorOperations.TextView.GetCaretPosition();
+            editorOperations.TextView.Caret.MoveTo(caretPosition);
+
+            return matchingPosition;
+        }
+
+        internal static SnapshotPoint GetPairPosition(this IEditorOperations editorOperations, DTE dte)
+        {
+            return GetPairPosition(editorOperations, editorOperations.TextView.GetCaretPosition(), dte);
+        }
+
+        internal static SnapshotPoint GetNextEnclosing(this IEditorOperations editorOperations, SnapshotPoint position, ITextStructureNavigator navigator, DTE dte)
+        {
+            // navigator.GetSpanOfEnclosing proved to be too unreliable for our purposes
+            // use Edit.GotoBrace to find matching expressions instead
+
+            var startPosition = editorOperations.GetNextNonWhiteSpaceCharacter(position);
+            var endPosition = editorOperations.GetPairPosition(startPosition, dte);
+
+            if (endPosition > startPosition)
             {
-                return newPosition;
+                return (endPosition + 1);
             }
 
-            SnapshotSpan enclosing;
-            try
+            var word = navigator.GetNextWord(startPosition);
+
+            if (word.HasValue)
             {
-                enclosing = navigator.GetSpanOfEnclosing(word.Value);
-            }
-            catch (Exception)
-            {
-                // The navigator sometimes throw just after the buffer has been changed.
-                // Maybe it needs some time to recalculate the indexes?
-                // For now, use the word value instead
                 return word.Value.End;
             }
 
-            // Sometimes the start of the enclosing may be marked with spaces or newlines
-            // Move beyond those to the first non-whitespace character
-            var startEnclosing = editorOperations.GetNextNonWhiteSpaceCharacter(enclosing.Start);
-
-            if (position == startEnclosing || newPosition == startEnclosing)
-            {
-                // The caret is at the beginning of an enclosing
-                // Return the end of the enclosing.
-                return enclosing.End;
-            }
-            // The caret is in the middle of an enclosing
-            // Move it to the end of the word
-            return word.Value.End;
+            return startPosition;
         }
 
-        internal static SnapshotPoint GetPreviousEnclosing(this IEditorOperations editorOperations, SnapshotPoint position, ITextStructureNavigator navigator)
+        internal static SnapshotPoint GetPreviousEnclosing(this IEditorOperations editorOperations, SnapshotPoint position, ITextStructureNavigator navigator, DTE dte)
         {
-            var newPosition = editorOperations.GetPreviousNonWhiteSpaceCharacter(position);
-            var word = navigator.GetPreviousWord(newPosition);
+            // navigator.GetSpanOfEnclosing proved to be too unreliable for our purposes
+            // use Edit.GotoBrace to find matching expressions instead
 
-            if (!word.HasValue)
-            {
-                return newPosition;
-            }
+            var endPosition = editorOperations.GetPreviousNonWhiteSpaceCharacter(position);
+            var startPosition = editorOperations.GetPairPosition(endPosition, dte);
 
-            SnapshotSpan enclosing;
-            try
+            if (startPosition < endPosition)
             {
-                enclosing = navigator.GetSpanOfEnclosing(word.Value);
-            }
-            catch (Exception)
-            {
-                // The navigator sometimes throw just after the buffer has been changed.
-                // Maybe it needs some time to recalculate the indexes?
-                // For now, use the word value instead
-                return word.Value.End;
+                return startPosition;
             }
 
-            if (position == enclosing.End || newPosition == enclosing.End)
+            var word = navigator.GetPreviousWord(endPosition);
+
+            if (word.HasValue)
             {
-                // The caret is at the end of an enclosing
-                // Return the beginning of the enclosing
-                return enclosing.Start;
+                return word.Value.Start;
             }
-            // The caret is in the middle of an enclosing
-            // Move it to the beginning of the word
-            return word.Value.Start;
+
+            return endPosition;
         }
 
-        internal static SnapshotPoint GetNextEnclosing(this IEditorOperations editorOperations, ITextStructureNavigator navigator)
+        internal static SnapshotPoint GetNextEnclosing(this IEditorOperations editorOperations, ITextStructureNavigator navigator, DTE dte)
         {
-            return GetNextEnclosing(editorOperations, editorOperations.TextView.Caret.Position.BufferPosition, navigator);
+            return GetNextEnclosing(editorOperations, editorOperations.TextView.Caret.Position.BufferPosition, navigator, dte);
         }
 
-        internal static SnapshotPoint GetPreviousEnclosing(this IEditorOperations editorOperations, ITextStructureNavigator navigator)
+        internal static SnapshotPoint GetPreviousEnclosing(this IEditorOperations editorOperations, ITextStructureNavigator navigator, DTE dte)
         {
-            return GetPreviousEnclosing(editorOperations, editorOperations.TextView.Caret.Position.BufferPosition, navigator);
+            return GetPreviousEnclosing(editorOperations, editorOperations.TextView.Caret.Position.BufferPosition, navigator, dte);
         }
 
         internal static void MoveToEndOfLine(this IEditorOperations editorOperations)

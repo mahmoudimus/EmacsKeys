@@ -9,6 +9,7 @@ using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Operations;
+using EnvDTE;
 
 namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
 {
@@ -23,13 +24,9 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
     {
         internal override void Execute(EmacsCommandContext context)
         {
-            var position = context.EditorOperations.GetPreviousEnclosing(context.TextStructureNavigator);
+            DTE vs = context.Manager.ServiceProvider.GetService<DTE>();
+            var position = context.EditorOperations.GetPreviousEnclosing(context.TextStructureNavigator, vs);
             context.EditorOperations.MoveCaret(position);
-            // Sometimes the start of the enclosing may be marked with spaces or newlines
-            // Move beyond those to the first non-whitespace character
-            // Moving in two steps ensures that the start of the enclosure remains
-            // visible within the final buffer
-            context.EditorOperations.MoveToNextNonWhiteSpaceCharacter();
         }
     }
 }

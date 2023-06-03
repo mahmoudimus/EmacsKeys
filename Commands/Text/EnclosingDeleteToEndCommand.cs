@@ -9,6 +9,7 @@ using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Operations;
+using EnvDTE;
 
 namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
 {
@@ -24,10 +25,11 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
         {
             var caretPosition = context.TextView.GetCaretPosition();
             var position = caretPosition;
+            DTE vs = context.Manager.ServiceProvider.GetService<DTE>();
 
             for (var counter = context.Manager.GetUniversalArgumentOrDefault(1); counter > 0; counter--)
             {
-                position = context.EditorOperations.GetNextEnclosing(position, context.TextStructureNavigator);
+                position = context.EditorOperations.GetNextEnclosing(position, context.TextStructureNavigator, vs);
             }
 
             if (position != caretPosition)
