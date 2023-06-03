@@ -212,12 +212,20 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
             // navigator.GetSpanOfEnclosing proved to be too unreliable for our purposes
             // use Edit.GotoBrace to find matching expressions instead
 
-            var startPosition = editorOperations.GetNextNonWhiteSpaceCharacter(position);
-            var endPosition = editorOperations.GetPairPosition(startPosition, dte);
+            String enclosingStartCharacters = "([{<'\"";
 
-            if (endPosition > startPosition)
+            var startPosition = editorOperations.GetNextNonWhiteSpaceCharacter(position);
+
+            if (enclosingStartCharacters.Contains(startPosition.GetChar()))
             {
-                return (endPosition + 1);
+                // The caret is at potentially at the beginning of an s-expression.
+                // Try getting the matching pair
+                var endPosition = editorOperations.GetPairPosition(startPosition, dte);
+
+                if (endPosition > startPosition)
+                {
+                    return (endPosition + 1);
+                }
             }
 
             var word = navigator.GetNextWord(startPosition);
@@ -235,12 +243,21 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
             // navigator.GetSpanOfEnclosing proved to be too unreliable for our purposes
             // use Edit.GotoBrace to find matching expressions instead
 
-            var endPosition = editorOperations.GetPreviousNonWhiteSpaceCharacter(position);
-            var startPosition = editorOperations.GetPairPosition(endPosition, dte);
+            String enclosingEndCharacters = ")]}>'\"";
 
-            if (startPosition < endPosition)
+            var endPosition = editorOperations.GetPreviousNonWhiteSpaceCharacter(position);
+
+            if (endPosition != 0 &&
+                enclosingEndCharacters.Contains((endPosition - 1).GetChar()))
             {
-                return startPosition;
+                // The caret is at potentially at the end of an s-expression.
+                // Try getting the matching pair
+                var startPosition = editorOperations.GetPairPosition(endPosition, dte);
+
+                if (startPosition < endPosition)
+                {
+                    return startPosition;
+                }
             }
 
             var word = navigator.GetPreviousWord(endPosition);
