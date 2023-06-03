@@ -216,6 +216,12 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
 
             var startPosition = editorOperations.GetNextNonWhiteSpaceCharacter(position);
 
+            if (startPosition.Position == editorOperations.TextView.TextBuffer.CurrentSnapshot.Length)
+            {
+                // end of buffer reached
+                return startPosition;
+            }
+
             if (enclosingStartCharacters.Contains(startPosition.GetChar()))
             {
                 // The caret is at potentially at the beginning of an s-expression.
@@ -247,8 +253,13 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
 
             var endPosition = editorOperations.GetPreviousNonWhiteSpaceCharacter(position);
 
-            if (endPosition != 0 &&
-                enclosingEndCharacters.Contains((endPosition - 1).GetChar()))
+            if (endPosition == 0)
+            {
+                // beginning of buffer reached
+                return endPosition;
+            }
+
+            if (enclosingEndCharacters.Contains((endPosition - 1).GetChar()))
             {
                 // The caret is at potentially at the end of an s-expression.
                 // Try getting the matching pair
