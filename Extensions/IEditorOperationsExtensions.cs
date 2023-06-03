@@ -252,7 +252,10 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
             {
                 // The caret is at potentially at the end of an s-expression.
                 // Try getting the matching pair
-                var startPosition = editorOperations.GetPairPosition(endPosition, dte);
+
+                // HACK: When the caret is placed between two balanced expressions, the forward one is prioritized.
+                // Moving the position backward once makes sure that we catch the previous match.
+                var startPosition = editorOperations.GetPairPosition(endPosition - 1, dte);
 
                 if (startPosition < endPosition)
                 {
