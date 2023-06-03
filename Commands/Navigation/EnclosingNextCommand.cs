@@ -27,6 +27,13 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
             DTE vs = context.Manager.ServiceProvider.GetService<DTE>();
             var position = context.EditorOperations.GetNextEnclosing(context.TextStructureNavigator, vs);
             context.EditorOperations.MoveCaret(position);
+
+            // Update the selection. This is needed to ensure proper rendering,
+            // since calling the Edit.GotoBrace can cancel existing highlights
+            if (context.MarkSession.IsActive)
+            {
+                context.MarkSession.Activate();
+            }
         }
     }
 }
