@@ -78,5 +78,8 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
         ParagraphNext = 0x50,
         SelectAll = 0x51,
         JoinLines = 0x52,
+        UppercaseSelection = 0x53,
+        LowercaseSelection = 0x54,
+        CapitalizeSelection = 0x55,
     }
 }

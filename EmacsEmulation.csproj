@@ -225,9 +225,12 @@
     <Compile Include="Commands\Navigation\EnclosingPreviousCommand.cs" />
     <Compile Include="Commands\Navigation\ParagraphNextCommand.cs" />
     <Compile Include="Commands\Navigation\ParagraphPreviousCommand.cs" />
+    <Compile Include="Commands\Text\CapitalizeSelectionCommand.cs" />
+    <Compile Include="Commands\Text\LowercaseSelectionCommand.cs" />
     <Compile Include="Commands\Text\EnclosingDeleteToEndCommand.cs" />
     <Compile Include="Commands\Text\EnclosingDeleteToStartCommand.cs" />
     <Compile Include="Commands\Text\JoinLinesCommand.cs" />
+    <Compile Include="Commands\Text\UppercaseSelectionCommand.cs" />
     <Compile Include="Commands\Window\NextWindowCommand.cs" />
     <Compile Include="Commands\Window\PreviousWindowCommand.cs" />
     <Compile Include="Commands\Window\SplitHorizontalCommand.cs" />
