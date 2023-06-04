@@ -22,50 +22,36 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
     {
         internal override void Execute(EmacsCommandContext context)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
             DTE vs = context.Manager.ServiceProvider.GetService<DTE>();
 
-            if (vs.ActiveDocument != null && vs.ActiveDocument.ActiveWindow != null)
+            var isSingleHorizontalPane = context.WindowOperations.IsSingleHorizontalPane();
+            var isSingleVerticalPane = context.WindowOperations.IsSingleVerticalPane();
+
+            if (isSingleVerticalPane.HasValue && !isSingleVerticalPane.Value)
             {
-                var textWindow = vs.ActiveDocument.ActiveWindow.Object as TextWindow;
-                var documentWindows = vs.ActiveDocument.Windows;
+                // If there are multiple splits, calling the Window.Split
+                // command one more time will fold them for us
+                vs.ExecuteCommand("Window.Split");
+            }
 
-                if (textWindow != null)
+            // Close duplicated views of the active document
+            context.WindowOperations.CloseDuplicatedDocumentWindows();
+
+            // Merge tab groups
+            if (isSingleHorizontalPane.HasValue && !isSingleHorizontalPane.Value)
+            {
+                var isLeftPane = context.WindowOperations.IsLeftPane();
+                if (isLeftPane.HasValue && isLeftPane.Value)
                 {
-                    // Close vertical panes
-                    if (textWindow.Panes.Count == 2)
-                    {
-                        vs.ExecuteCommand("Window.Split");
-                    }
-
-                    // Close horizontal panes
-                    if (documentWindows.Count > 1)
-                    {
-                        foreach (Window window in documentWindows)
-                        {
-                            if (window.Object !=  textWindow)
-                            {
-                                window.Close();
-                            }
-                        }
-                    }
-
-                    // Merge tab groups
-                    // Since we don't know if we are in the left pane or in the right pane,
-                    // try merging both ways. Since one of the calls will always fail,
-                    // remember to catch exceptions to avoid displaying on the minibuffer.
-                    // Using vs.ExecuteCommand directly without going through the router give
-                    // us more flexibilty to handle exceptions.
-                    try
-                    {
-                        vs.ExecuteCommand("Window.MoveAllToPreviousTabGroup");
-                    }
-                    catch (COMException) {}
-                    try
-                    {
-                        vs.ExecuteCommand("Window.MoveAllToNextTabGroup");
-                    }
-                    catch (COMException) {}
+                    // The active window is in the left.
+                    // Merge them to the right.
+                    vs.ExecuteCommand("Window.MoveAllToNextTabGroup");
+                }
+                if (isLeftPane.HasValue && !isLeftPane.Value)
+                {
+                    // The active window is in the right.
+                    // Merge them to the left.
+                    vs.ExecuteCommand("Window.MoveAllToPreviousTabGroup");
                 }
             }
         }

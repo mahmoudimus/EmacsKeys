@@ -24,6 +24,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
 
             this.TextStructureNavigator = textStructureNavigatorSelectorService.GetTextStructureNavigator(view.TextBuffer);
             this.MarkSession = MarkSession.GetSession(view);
+            this.WindowOperations = new WindowOperations(manager.ServiceProvider.GetService<EnvDTE.DTE>());
         }
 
         internal ITextStructureNavigator TextStructureNavigator { get; private set; }
@@ -32,7 +33,9 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
         internal ITextBuffer TextBuffer { get { return this.TextView.TextBuffer; } }
         internal EmacsCommandsManager Manager { get; private set; }
         internal CommandRouter CommandRouter { get; private set; }
-        internal int? UniversalArgument { get { return this.Manager.UniversalArgument; } }               
+        internal int? UniversalArgument { get { return this.Manager.UniversalArgument; } }
+
         internal MarkSession MarkSession { get; private set; }
+        internal WindowOperations WindowOperations { get; private set; }
     }
 }

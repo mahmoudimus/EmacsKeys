@@ -7,7 +7,6 @@ using System.ComponentModel.Design;
 using Microsoft.VisualStudio.Text.Formatting;
 using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Shell;
-using EnvDTE;
 
 namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
 {
@@ -22,26 +21,31 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
     {
         internal override void Execute(EmacsCommandContext context)
         {
-            DTE vs = context.Manager.ServiceProvider.GetService<DTE>();
+            var isSingleVerticalPane = context.WindowOperations.IsSingleVerticalPane();
 
-            if (vs.ActiveDocument != null && vs.ActiveDocument.ActiveWindow != null)
+            if (!isSingleVerticalPane.HasValue)
             {
-                var textWindow = vs.ActiveDocument.ActiveWindow.Object as TextWindow;
+                // Could not identify active window or document.
+                // Do nothing
+                return;
+            }
 
-                if (textWindow != null && textWindow.Panes.Count > 1)
-                {
-                    context.CommandRouter.ExecuteDTECommand("Window.NextSplitPane");    
-                }
-                else
-                {
-                    // TODO
-                    // The current EmacsEmulation version has limited support for tab groups,
-                    // which are used as horizontal panes (Ctrl+X, 3).
-                    // Relying on the NavigateTabGroups extension provide us some functionality,
-                    // although we still need a way to check if there are multiple tab groups or
-                    // not in order to swap between panes as in Emacs.
-                    context.CommandRouter.ExecuteDTECommand("Tools.NavigateTabGroups.Next");
-                }
+            if (isSingleVerticalPane.Value)
+            {
+                // No other vertical panes. Switch to the other horizontal pane.
+
+                // TODO
+                // The current EmacsEmulation version has limited support for tab groups,
+                // which are used as horizontal panes (Ctrl+X, 3).
+                // Relying on the NavigateTabGroups extension provide us some functionality,
+                // although we still need a way to check if there are multiple tab groups or
+                // not in order to swap between panes as in Emacs.
+                context.CommandRouter.ExecuteDTECommand("Tools.NavigateTabGroups.Next");
+            }
+            else
+            {
+                // Multiple vertical planes detected. Switch to the next one.
+                context.CommandRouter.ExecuteDTECommand("Window.NextSplitPane");
             }
         }
     }

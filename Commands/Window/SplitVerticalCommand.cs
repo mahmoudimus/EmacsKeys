@@ -24,44 +24,41 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
     {
         internal override void Execute(EmacsCommandContext context)
         {
-            DTE vs = context.Manager.ServiceProvider.GetService<DTE>();
+            var isSingleVerticalPane = context.WindowOperations.IsSingleVerticalPane();
 
-            if (vs.ActiveDocument != null && vs.ActiveDocument.ActiveWindow != null)
+            if (!isSingleVerticalPane.HasValue)
             {
-                var textWindow = vs.ActiveDocument.ActiveWindow.Object as TextWindow;
+                // Could not get the active window. Do nothing.
+                return;
+            }
 
-                if (textWindow == null)
+            if (isSingleVerticalPane.Value)
+            {
+                // Recenter the liine before splitting the window
+                ITextCaret caret = context.TextView.Caret;
+                double viewHeight = context.TextView.ViewportHeight;
+
+                if ((caret.Top + caret.Height) > (viewHeight / 2.0))
                 {
-                    return;
+                    // Move line to a quarter page position from the top.
+                    // When the window is split, the carret will be on the center of each pane
+                    // Note that we only need to render the top half of the page,
+                    // since the bottom half will be replaced by the split window
+                    context.TextView.DisplayTextLineContainingBufferPosition(caret.Position.BufferPosition, viewHeight / 4.0, ViewRelativePosition.Top,
+                        context.TextView.ViewportWidth, viewHeight / 2.0);
                 }
 
-                if (textWindow.Panes.Count == 1)
-                {
-                    ITextCaret caret = context.TextView.Caret;
-                    double viewHeight = context.TextView.ViewportHeight;
-
-                    if ((caret.Top + caret.Height) > (viewHeight / 2.0))
-                    {
-                        // Move line to a quarter page position from the top.
-                        // When the window is split, the carret will be on the center of each pane
-                        // Note that we only need to render the top half of the page,
-                        // since the bottom half will be replaced by the split window
-                        context.TextView.DisplayTextLineContainingBufferPosition(caret.Position.BufferPosition, viewHeight / 4.0, ViewRelativePosition.Top,
-                            context.TextView.ViewportWidth, viewHeight / 2.0);
-                    }
-
-                    // TODO: setting the below should manage the caret position on the newly
-                    // created pane. However, it is currently not showing the desired behavior...
-                    // context.Manager.StashView = context.TextView;
-                    context.CommandRouter.ExecuteDTECommand("Window.Split");
-                }
-                else
-                {
-                    // Having more than 2 vertical panes is not currently supported.
-                    // If the window is already split, then fold it back
-                    // Calling the Window.Split command will toggle it for us
-                    context.CommandRouter.ExecuteDTECommand("Window.Split");
-                }
+                // TODO: setting the below should manage the caret position on the newly
+                // created pane. However, it is currently not showing the desired behavior...
+                // context.Manager.StashView = context.TextView;
+                context.CommandRouter.ExecuteDTECommand("Window.Split");
+            }
+            else
+            {
+                // Having more than 2 vertical panes is not currently supported.
+                // If the window is already split, then fold it back
+                // Calling the Window.Split command will toggle it for us
+                context.CommandRouter.ExecuteDTECommand("Window.Split");
             }
         }
     }
