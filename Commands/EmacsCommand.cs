@@ -32,6 +32,14 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
         /// <param name="context"></param>
         internal virtual void ExecuteInverse(EmacsCommandContext context)
         {
+            var commandAttribute = (EmacsCommandAttribute)Attribute.GetCustomAttribute(this.GetType(), typeof(EmacsCommandAttribute));
+
+            if (commandAttribute != null && commandAttribute.CanBeRepeated)
+            {
+                context.Manager.UpdateStatus("Negative repetition argument: " + context.UniversalArgument.Value);
+                return;
+            }
+
             throw new NotImplementedException();
         }
     }

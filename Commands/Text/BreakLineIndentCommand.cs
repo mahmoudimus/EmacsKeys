@@ -23,10 +23,5 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
         {
             context.CommandRouter.ExecuteDTECommand(VsCommands.BreakLineCommandName);
         }
-
-        internal override void ExecuteInverse(EmacsCommandContext context)
-        {
-            // do nothing
-        }
     }
 }

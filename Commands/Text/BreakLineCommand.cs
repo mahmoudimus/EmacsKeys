@@ -35,10 +35,5 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
                 context.EditorOperations.MoveToStartOfLine();
             }
         }
-
-        internal override void ExecuteInverse(EmacsCommandContext context)
-        {
-            // do nothing
-        }
     }
 }
