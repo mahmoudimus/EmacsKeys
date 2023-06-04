@@ -9,7 +9,6 @@ using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
-using EnvDTE;
 
 namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
 {

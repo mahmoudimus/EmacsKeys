@@ -28,11 +28,35 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
             ThreadHelper.ThrowIfNotOnUIThread();
             DTE vs = context.Manager.ServiceProvider.GetService<DTE>();
 
-            if (vs.ActiveDocument != null && vs.ActiveDocument.ActiveWindow != null)
+            var isSingleHorizontalPane = context.WindowOperations.IsSingleHorizontalPane();
+            var isLeftPane = context.WindowOperations.IsLeftPane();
+
+            if (!isSingleHorizontalPane.HasValue || !isLeftPane.HasValue)
             {
-                context.Manager.StashView = context.TextView;
-                vs.ActiveDocument.NewWindow().Activate();
+                // Could not get the active window. Do nothing.
+                return;
+            }
+
+            // Create a new view of the active document with the same formatting
+            context.Manager.StashView = context.TextView;
+            vs.ActiveDocument.NewWindow().Activate();
+
+            if (isSingleHorizontalPane.Value)
+            {
+                // Create a new tab group
                 context.CommandRouter.ExecuteDTECommand("Window.NewVerticalTabGroup");
+            }
+            else
+            {
+                // Move to the other tab group
+                if (isLeftPane.Value)
+                {
+                    context.CommandRouter.ExecuteDTECommand("Window.MovetoNextTabGroup");
+                }
+                else
+                {
+                    context.CommandRouter.ExecuteDTECommand("Window.MovetoPreviousTabGroup");
+                }
             }
         }
     }
