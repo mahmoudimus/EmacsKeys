@@ -231,6 +231,7 @@
     <Compile Include="Commands\Text\EnclosingDeleteToStartCommand.cs" />
     <Compile Include="Commands\Text\JoinLinesCommand.cs" />
     <Compile Include="Commands\Text\UppercaseSelectionCommand.cs" />
+    <Compile Include="Commands\Window\DeleteWindowCommand.cs" />
     <Compile Include="Commands\Window\NextWindowCommand.cs" />
     <Compile Include="Commands\Window\PreviousWindowCommand.cs" />
     <Compile Include="Commands\Window\SplitHorizontalCommand.cs" />

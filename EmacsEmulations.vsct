@@ -126,21 +126,21 @@
           </Strings>
       </Button>
 
-      <Button guid="guidEmacsEmulationsCmdSet" id="cmdidBackToIndentation" priority="0x0100" type="Button">
+      <Button guid="guidEmacsEmulationsCmdSet" id="cmdidDeleteWindow" priority="0x0100" type="Button">
           <Parent guid="guidEmacsEmulationsCmdSet" id="EmacsEmulationsMenuGroup" />
           <CommandFlag>CommandWellOnly</CommandFlag>
           <Strings>
-              <ButtonText>EmacsBackToIndentation</ButtonText>
+              <ButtonText>EmacsDeleteWindow</ButtonText>
           </Strings>
       </Button>
 
-       <Button guid="guidEmacsEmulationsCmdSet" id="cmdidParagraphPrevious" priority="0x0100" type="Button">
-           <Parent guid="guidEmacsEmulationsCmdSet" id="EmacsEmulationsMenuGroup" />
-           <CommandFlag>CommandWellOnly</CommandFlag>
-           <Strings>
-               <ButtonText>EmacsParagraphPrevious</ButtonText>
-           </Strings>
-       </Button>
+      <Button guid="guidEmacsEmulationsCmdSet" id="cmdidParagraphPrevious" priority="0x0100" type="Button">
+          <Parent guid="guidEmacsEmulationsCmdSet" id="EmacsEmulationsMenuGroup" />
+          <CommandFlag>CommandWellOnly</CommandFlag>
+          <Strings>
+              <ButtonText>EmacsParagraphPrevious</ButtonText>
+          </Strings>
+      </Button>
 
       <Button guid="guidEmacsEmulationsCmdSet" id="cmdidParagraphNext" priority="0x0100" type="Button">
           <Parent guid="guidEmacsEmulationsCmdSet" id="EmacsEmulationsMenuGroup" />
@@ -189,6 +189,15 @@
               <ButtonText>EmacsCapitalizeSelection</ButtonText>
           </Strings>
       </Button>
+
+      <Button guid="guidEmacsEmulationsCmdSet" id="cmdidBackToIndentation" priority="0x0100" type="Button">
+          <Parent guid="guidEmacsEmulationsCmdSet" id="EmacsEmulationsMenuGroup" />
+          <CommandFlag>CommandWellOnly</CommandFlag>
+          <Strings>
+              <ButtonText>EmacsBackToIndentation</ButtonText>
+          </Strings>
+      </Button>
+
     </Buttons>
 
 
@@ -283,6 +292,11 @@
           editor="guidVSStd97" />
 
     <KeyBinding guid="guidEmacsEmulationsCmdSet"
+      id="cmdidDeleteWindow"
+      mod1="CONTROL" key1="X" key2="0"
+      editor="GUID_TextEditorFactory" />
+
+    <KeyBinding guid="guidEmacsEmulationsCmdSet"
           id="cmdidBackToIndentation"
           mod1="ALT" key1="M"
           editor="GUID_TextEditorFactory" />
@@ -347,7 +361,7 @@
       <IDSymbol name="cmdidPreviousWindow" value="0x45" />
       <IDSymbol name="cmdidNextWindow" value="0x46" />
       <IDSymbol name="cmdidSwitchWindow" value="0x47" />
-      <IDSymbol name="cmdidBackToIndentation" value="0x48" />
+      <IDSymbol name="cmdidDeleteWindow" value="0x48" />
       <IDSymbol name="cmdidParagraphPrevious" value="0x49" />
       <IDSymbol name="cmdidParagraphNext" value="0x50" />
       <IDSymbol name="cmdidSelectAll" value="0x51" />
@@ -355,6 +369,7 @@
       <IDSymbol name="cmdidUppercaseSelection" value="0x53" />
       <IDSymbol name="cmdidLowercaseSelection" value="0x54" />
       <IDSymbol name="cmdidCapitalizeSelection" value="0x55" />
+      <IDSymbol name="cmdidBackToIndentation" value="0x56" />
 
     </GuidSymbol>
 
