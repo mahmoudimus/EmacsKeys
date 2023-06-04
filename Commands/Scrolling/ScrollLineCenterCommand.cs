@@ -40,7 +40,32 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
             }
             else
             {
-                context.EditorOperations.ScrollLineCenter();
+                int currentPosition = context.TextView.GetCaretPosition().Position;
+
+                // reset index if last command is not ScrollLineCenter, or if the caret position
+                // has been changed, for example through mouse operations
+                if (context.Manager.LastExecutedCommand == null ||
+                    context.Manager.LastExecutedCommand.Command != (int)EmacsCommandID.ScrollLineCenter ||
+                    recenterOriginalPosition != currentPosition)
+                {
+                    recenterPositionIndex = 0;
+                    recenterOriginalPosition = currentPosition;
+                }
+
+                // switch between center, top, and bottom in the designated order
+                switch(this.recenterPositions[recenterPositionIndex])
+                {
+                    case ScrollLinePosition.Top:
+                        context.EditorOperations.ScrollLineTop();
+                        break;
+                    case ScrollLinePosition.Bottom:
+                        context.EditorOperations.ScrollLineBottom();
+                        break;
+                    case ScrollLinePosition.Center:
+                        context.EditorOperations.ScrollLineCenter();
+                        break;
+                }
+                recenterPositionIndex = (1 + recenterPositionIndex) % recenterPositions.Count;
             }
         }
 
@@ -55,5 +80,25 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
                 context.EditorOperations.ScrollDownAndMoveCaretIfNecessary();
             }
         }
+
+        // Types of supported scroll operations
+        internal enum ScrollLinePosition
+        {
+            Center,
+            Top,
+            Bottom,
+        }
+
+        // Consecutive operation counter
+        internal int recenterPositionIndex = 0;
+
+        // Initial caret position during consecutive operations
+        internal int recenterOriginalPosition;
+
+        // Order of operations to be executed on consecutive calls
+        // Defaults to `center, top, bottom`
+        internal List<ScrollLinePosition> recenterPositions = new List<ScrollLinePosition> {
+            ScrollLinePosition.Center, ScrollLinePosition.Top, ScrollLinePosition.Bottom
+        };
     }
 }
