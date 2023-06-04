@@ -51,6 +51,8 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
 
                     try
                     {
+                        // clear the message bar
+                        this.manager.ClearStatus();
                         // we did find a match so we execute the corresponding command
                         this.manager.Execute(this.view, command);
                     }
