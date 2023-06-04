@@ -46,22 +46,16 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
             }
             var activeWindow = dte.ActiveWindow;
 
-            foreach (Window window in dte.Windows)
-            {
-                if (window.Type == activeWindow.Type &&
-                    window.Left != activeWindow.Left)
-                {
-                    return false;
-                }
-            }
-            return true;
+            // TODO: Find proper way to check for single panes
+            // Sometimes non-active windows do not display dimension values properly
+            return (Math.Abs(dte.MainWindow.Width - activeWindow.Width) < 100);
         }
 
         public bool? IsLeftPane(Window activeWindow)
         {
             Shell.ThreadHelper.ThrowIfNotOnUIThread();
             // TODO: Find proper way to check for leftmost window
-            // Sometimes non-active windows do not display Left value properly
+            // Sometimes non-active windows do not display dimension values properly
             return activeWindow.Left < 100;
         }
 
