@@ -10,8 +10,8 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
     /// <summary>
     /// This command converts the selection to lower case and then clears the selection.
     /// If there is no active selection, does nothing.
-    /// 
-    /// Keys: Ctrl+X L
+    ///
+    /// Keys: Ctrl+X, L
     /// </summary>
     [EmacsCommand(EmacsCommandID.LowercaseSelection)]
     internal class LowercaseSelectionCommand : EmacsCommand

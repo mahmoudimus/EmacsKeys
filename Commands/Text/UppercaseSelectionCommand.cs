@@ -10,8 +10,8 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
     /// <summary>
     /// This command converts the selection to upper case and then clears the selection.
     /// If there is no active selection, does nothing.
-    /// 
-    /// Keys: Ctrl + X U
+    ///
+    /// Keys: Ctrl+X, U
     /// </summary>
     [EmacsCommand(EmacsCommandID.UppercaseSelection)]
     internal class UppercaseSelectionCommand : EmacsCommand

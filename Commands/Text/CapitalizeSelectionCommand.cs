@@ -10,8 +10,8 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
     /// <summary>
     /// This command capitalizes the selection and then clears the selection.
     /// If there is no active selection, does nothing.
-    /// 
-    /// Keys: 
+    ///
+    /// Keys:
     /// </summary>
     [EmacsCommand(EmacsCommandID.CapitalizeSelection)]
     internal class CapitalizeSelectionCommand : EmacsCommand
