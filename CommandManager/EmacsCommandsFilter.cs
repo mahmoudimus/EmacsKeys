@@ -71,7 +71,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
                     // so we need to flush any accumulated kill string
                     if (this.IsKillwordFlushCommand(pguidCmdGroup, nCmdID))
                     {
-                        view.FlushKillSring(manager.ClipboardRing);
+                        view.FlushKillString(manager.ClipboardRing);
                     }
 
                     // Check if we should insert chars multiple times

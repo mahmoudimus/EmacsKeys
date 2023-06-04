@@ -176,7 +176,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
                             }
                             else
                             {
-                                view.FlushKillSring(this.ClipboardRing);
+                                view.FlushKillString(this.ClipboardRing);
                             }
 
                             this.LastExecutedCommand = shouldExecuteInverse ? inverseCommandMetadata : metadata;

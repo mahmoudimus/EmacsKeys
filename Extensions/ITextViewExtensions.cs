@@ -80,7 +80,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
             view.Properties.GetOrCreateSingletonProperty<StringBuilder>(KillStringObjectID, () => new StringBuilder()).Append(value);
         }
 
-        internal static void FlushKillSring(this ITextView view, ClipboardRing clipboardRing)
+        internal static void FlushKillString(this ITextView view, ClipboardRing clipboardRing)
         {
             string accumulatedKillString = view.GetKillString();
 
