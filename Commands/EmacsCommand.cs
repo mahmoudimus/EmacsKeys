@@ -25,6 +25,8 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
 
         /// <summary>
         /// Inverse implementation of the command. This methods should be overriden by commands that supports to be repeated.
+        /// In order to invoke this method when negative universal argument values are passed to a command that cannot be repeated,
+        /// pass the command's own ID as the InverseArgument during initialization.
         /// </summary>
         /// <remarks>Try to use public editor APIs over DTE and other APIs</remarks>
         /// <param name="context"></param>

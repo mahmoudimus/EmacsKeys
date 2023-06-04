@@ -124,10 +124,11 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
 
                             if (evaluateUniversalArgument)
                             {
-                                // Check if we should execute the inverse logic of the command by checking if there are
-                                // any registered commands, and if the universal argument is lower than 0
-                                shouldExecuteInverse = (metadata.InverseCommand != 0) && (GetUniversalArgumentOrDefault() < 0);
-                                if (shouldExecuteInverse)
+                                // Check if we should execute the inverse logic of the command by checking if the universal argument
+                                // is lower than 0, and if there are any registered commands or if the command can be repeated.
+                                shouldExecuteInverse = (metadata.InverseCommand != 0 || metadata.CanBeRepeated) && (GetUniversalArgumentOrDefault() < 0);
+                                // If the InverseCommand is registered with the same ID, call the ExecuteInverse method instead.
+                                if (shouldExecuteInverse && metadata.InverseCommand != 0 && (int)metadata.InverseCommand != metadata.Command)
                                 {
                                     // Search the inverse command using the metadata
                                     inverseCommandMetadata = GetCommandMetadata(metadata.InverseCommand);

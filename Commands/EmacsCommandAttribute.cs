@@ -51,13 +51,18 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
         public int Command { get; private set; }
 
         /// <summary>
-        /// Gets the ID of the inverse command. 
-        /// The command may provide declarative the command to be executed when inverse behavior is needed instead of implementing the <see cref="EmacsCommand.ExecuteInverse"/>.
+        /// Gets the ID of the inverse command.
+        /// When a negative universal argument value is passed to the command, its designated inverse command is executed with an
+        /// equivalent (positive) universal argument value. When the inverse command argument is set to the command's own ID, or
+        /// when the command can be repeated but no inverse command is specified, the method <see cref="EmacsCommand.ExecuteInverse"/>
+        /// is invoked with an equivalent (positive) universal argument value.
         /// </summary>
         public EmacsCommandID InverseCommand { get; set; }
 
         /// <summary>
         /// Gets true if the command can be executed multiple times using the universal argument (C-u)
+        /// Commands that can be repeated must also specify an InverseCommand attribute or define the
+        /// <see cref="EmacsCommand.ExecuteInverse"/> method in order to handle negative values.
         /// </summary>
         public bool CanBeRepeated { get; set; }
 
