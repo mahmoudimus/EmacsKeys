@@ -19,6 +19,15 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
             this.dte = dte;
         }
 
+        public IEnumerable<Window> GetDocumentWindows()
+        {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
+            // based from NavigateTabGroups implementation
+            return from window in dte.Windows.Cast<Window>()
+                   where window.Type == vsWindowType.vsWindowTypeDocument
+                   select window;
+        }
+
         public bool? IsSingleVerticalPane()
         {
             Shell.ThreadHelper.ThrowIfNotOnUIThread();
