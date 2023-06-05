@@ -102,5 +102,28 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
                 }
             }
         }
+
+        public void CloseOtherWindows()
+        {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
+
+            if (dte.ActiveDocument == null ||
+                dte.ActiveDocument.ActiveWindow == null)
+            {
+                // No active document. Do nothing.
+                return;
+            }
+
+            var activeDocumentWindow = dte.ActiveDocument.ActiveWindow;
+
+            foreach (Window window in dte.Windows)
+            {
+                if (window != activeDocumentWindow &&
+                    window.Type == activeDocumentWindow.Type)
+                {
+                    window.Close();
+                }
+            }
+        }
     }
 }

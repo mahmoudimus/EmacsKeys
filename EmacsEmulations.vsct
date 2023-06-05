@@ -198,6 +198,13 @@
           </Strings>
       </Button>
 
+      <Button guid="guidEmacsEmulationsCmdSet" id="cmdidDeleteOtherWindow" priority="0x0100" type="Button">
+          <Parent guid="guidEmacsEmulationsCmdSet" id="EmacsEmulationsMenuGroup" />
+          <CommandFlag>CommandWellOnly</CommandFlag>
+          <Strings>
+              <ButtonText>EmacsDeleteOtherWindow</ButtonText>
+          </Strings>
+      </Button>
     </Buttons>
 
 
@@ -370,6 +377,7 @@
       <IDSymbol name="cmdidLowercaseSelection" value="0x54" />
       <IDSymbol name="cmdidCapitalizeSelection" value="0x55" />
       <IDSymbol name="cmdidBackToIndentation" value="0x56" />
+      <IDSymbol name="cmdidDeleteOtherWindow" value="0x57" />
 
     </GuidSymbol>
 
