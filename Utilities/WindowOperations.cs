@@ -91,14 +91,16 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
                 return;
             }
 
-            var activeDocumentWindow = dte.ActiveDocument.ActiveWindow;
-            var documentWindows = dte.ActiveDocument.Windows;
-
-            foreach (Window window in documentWindows)
+            // Only leave the active window of each document open
+            foreach(Document document in dte.Documents)
             {
-                if (window != activeDocumentWindow)
+                var activeDocumentWindow = document.ActiveWindow;
+                foreach(Window window in document.Windows)
                 {
-                    window.Close();
+                    if (window != activeDocumentWindow)
+                    {
+                        window.Close();
+                    }
                 }
             }
         }
@@ -116,6 +118,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
 
             var activeDocumentWindow = dte.ActiveDocument.ActiveWindow;
 
+            // close all other windows of the same type as the active one
             foreach (Window window in dte.Windows)
             {
                 if (window != activeDocumentWindow &&
