@@ -187,6 +187,31 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
             editorOperations.MoveCaret(GetPreviousNonWhiteSpaceCharacter(editorOperations));
         }
 
+        internal static bool IsAtEmptyPair(SnapshotPoint position, bool forward)
+        {
+            // Check wether the caret is immediately before or after an empty pair,
+            // such as () [] <> "" or ''
+            var startPosition = forward ? position : position - 2;
+            var endPosition = forward ? position + 1 : position - 1;
+            switch (startPosition.GetChar())
+            {
+                case '(':
+                    return endPosition.GetChar() == ')';
+                case '[':
+                    return endPosition.GetChar() == ']';
+                case '{':
+                    return endPosition.GetChar() == '}';
+                case '<':
+                    return endPosition.GetChar() == '>';
+                case '"':
+                    return endPosition.GetChar() == '"';
+                case '\'':
+                    return endPosition.GetChar() == '\'';
+                default:
+                    return false;
+            }
+        }
+
         internal static SnapshotPoint GetPairPosition(this IEditorOperations editorOperations, SnapshotPoint position, DTE dte, bool forward)
         {
             // TODO: call IVsTextViewFilter.GetPairExtents directly to avoid
@@ -197,8 +222,15 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
 
             // The behavior of Edit.GotoBrace change depending on the language server implementation
             // In C/C++, the brace at point is prioritized, and the caret is placed on the match position
-            // In C#, opening braces at or before point are prioritized, and the caret is placed after the match position
+            // In CSharp, opening braces at or before point are prioritized, and the caret is placed after the match position
             // TODO: Verify the behavior in other languages
+
+            // Handle empty pairs separately to avoid confusions when the caret is placed within braces
+            // For example, in CSharp Edit.GotoBrace will never match to the first pair in ()()
+            if (IsAtEmptyPair(position, forward))
+            {
+                return forward ? position + 2 : position - 2;
+            }
 
             var caretPosition = editorOperations.TextView.GetCaretPosition();
             var startPosition = (language == "C/C++" && !forward) ? position - 1 : position;
