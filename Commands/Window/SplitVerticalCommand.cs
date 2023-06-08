@@ -36,8 +36,9 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
                 // Recenter the liine before splitting the window
                 ITextCaret caret = context.TextView.Caret;
                 double viewHeight = context.TextView.ViewportHeight;
+                double top = context.TextView.TextViewLines.FirstVisibleLine.Bottom;
 
-                if ((caret.Top + caret.Height) > (viewHeight / 2.0))
+                if (caret.Bottom > top + (viewHeight / 2.0))
                 {
                     // Move line to a quarter page position from the top.
                     // When the window is split, the carret will be on the center of each pane
