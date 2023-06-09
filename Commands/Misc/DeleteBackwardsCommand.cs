@@ -21,7 +21,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
     /// 
     /// Keys: Bkspace
     /// </summary>
-    [EmacsCommand(VSConstants.VSStd2KCmdID.BACKSPACE, CanBeRepeated = true, UndoName="Delete")]
+    [EmacsCommand(VSConstants.VSStd2KCmdID.BACKSPACE, IsKillCommand = true, CanBeRepeated = true, UndoName="Delete")]
     internal class DeleteBackwardsCommand : EmacsCommand
     {
         internal override void Execute(EmacsCommandContext context)
