@@ -14,39 +14,25 @@ using Microsoft.VisualStudio.Text;
 namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
 {
     /// <summary>
-    /// This command deletes one character before the caret, but if that character is a tab, 
-    /// then it replaces the tab with the number of spaces it represented minus one.  
-    /// With a prefix arg, delete that many characters backwards (handling tabs appropriately), 
-    /// and if the arg is negative, delete characters forward (with no special tab handling).
+    /// This command deletes one character before the caret.
+    /// With a prefix arg, delete that many characters backwards.
+    /// If the arg is negative, delete that many characters forward.
     /// 
     /// Keys: Bkspace
     /// </summary>
-    [EmacsCommand(VSConstants.VSStd2KCmdID.BACKSPACE, IsKillCommand = true, CanBeRepeated = true, UndoName="Delete")]
+    [EmacsCommand(VSConstants.VSStd2KCmdID.BACKSPACE, IsKillCommand = true, CanBeRepeated = true, UndoName = "Delete")]
     internal class DeleteBackwardsCommand : EmacsCommand
     {
         internal override void Execute(EmacsCommandContext context)
         {
-            var caretPosition = context.TextView.GetCaretPosition().Position;
-
-            if (caretPosition > 0 &&
-                context.TextBuffer.CurrentSnapshot.GetText(context.TextView.GetCaretPosition() - 1, 1) == "\t")
-            {
-                context.TextView.Selection.Select(new Text.SnapshotSpan(context.TextView.TextSnapshot, new Span(caretPosition - 1, 1)), false);
-                context.EditorOperations.ConvertTabsToSpaces();
-                context.MarkSession.Deactivate();
-            }
-
+            // Redecaring the command allow us to incorporate it to the universal argument and kill ring logic.
+            // Since this is all handled by EmmacsCommandAttributes, we don't need any special handling here.
             context.EditorOperations.Backspace();
         }
 
         internal override void ExecuteInverse(EmacsCommandContext context)
         {
-            var caretPosition = context.TextView.GetCaretPosition().Position;
-
-            if (caretPosition < context.TextBuffer.CurrentSnapshot.Length)
-            {
-                context.EditorOperations.Delete();
-            }
+            context.EditorOperations.Delete();
         }
     }
 }

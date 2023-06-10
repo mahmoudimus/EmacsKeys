@@ -10,7 +10,9 @@ using System.ComponentModel.Composition;
 namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
 {
 	/// <summary>
-	/// Deletes a char
+	/// Deletes one character forward.
+	/// With a prefix arg, delete that many characters forward.
+	/// If the arg is negative, delete that many characters backward.
 	/// 
 	/// Keys: Delete
 	/// </summary>
@@ -19,6 +21,8 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
 	{
 		internal override void Execute(EmacsCommandContext context)
 		{
+			// Redecaring the command allow us to incorporate it to the universal argument and kill ring logic.
+			// Since this is all handled by EmmacsCommandAttributes, we don't need any special handling here.
 			context.EditorOperations.Delete();
 		}
 
