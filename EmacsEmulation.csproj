@@ -226,6 +226,7 @@
     <Compile Include="Commands\Navigation\ParagraphNextCommand.cs" />
     <Compile Include="Commands\Navigation\ParagraphPreviousCommand.cs" />
     <Compile Include="Commands\Text\CapitalizeSelectionCommand.cs" />
+    <Compile Include="Commands\Text\DeleteBackwardsCommand.cs" />
     <Compile Include="Commands\Text\LowercaseSelectionCommand.cs" />
     <Compile Include="Commands\Text\EnclosingDeleteToEndCommand.cs" />
     <Compile Include="Commands\Text\EnclosingDeleteToStartCommand.cs" />
@@ -244,7 +245,6 @@
     <Compile Include="Commands\EmacsCommandID.cs" />
     <Compile Include="Commands\File\SaveFileDirtyCommand.cs" />
     <Compile Include="Commands\Marks\ActivateRegionCommand.cs" />
-    <Compile Include="Commands\Misc\DeleteBackwardsCommand.cs" />
     <Compile Include="Commands\Misc\QuotedInsertCommand.cs" />
     <Compile Include="Commands\Misc\ExtendedCommand.cs" />
     <Compile Include="Commands\Navigation\CharLeftCommand.cs" />
