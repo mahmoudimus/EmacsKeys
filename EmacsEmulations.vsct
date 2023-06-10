@@ -221,6 +221,22 @@
               <ButtonText>EmacsDeleteWholeLine</ButtonText>
           </Strings>
       </Button>
+
+      <Button guid="guidEmacsEmulationsCmdSet" id="cmdidVirtualCaretInsertAtPoint" priority="0x0100" type="Button">
+          <Parent guid="guidEmacsEmulationsCmdSet" id="EmacsEmulationsMenuGroup" />
+          <CommandFlag>CommandWellOnly</CommandFlag>
+          <Strings>
+              <ButtonText>EmacsVirtualCaretInsertAtPoint</ButtonText>
+          </Strings>
+      </Button>
+
+      <Button guid="guidEmacsEmulationsCmdSet" id="cmdidVirtualCaretActivate" priority="0x0100" type="Button">
+          <Parent guid="guidEmacsEmulationsCmdSet" id="EmacsEmulationsMenuGroup" />
+          <CommandFlag>CommandWellOnly</CommandFlag>
+          <Strings>
+              <ButtonText>EmacsVirtualCaretActivate</ButtonText>
+          </Strings>
+      </Button>
     </Buttons>
 
 
@@ -344,6 +360,16 @@
       mod1="CONTROL SHIFT" key1="VK_BACK"
       editor="GUID_TextEditorFactory" />
 
+    <KeyBinding guid="guidEmacsEmulationsCmdSet"
+      id="cmdidVirtualCaretInsertAtPoint"
+      mod1="CONTROL" key1="M" key2="VK_SPACE"
+      editor="GUID_TextEditorFactory" />
+
+    <KeyBinding guid="guidEmacsEmulationsCmdSet"
+      id="cmdidVirtualCaretActivate"
+      mod1="CONTROL" key1="M" mod2="CONTROL" key2="VK_SPACE"
+      editor="GUID_TextEditorFactory" />
+
     <!--
         Bindings to existing VS commands
     -->
@@ -396,6 +422,8 @@
       <IDSymbol name="cmdidDeleteOtherWindow" value="0x57" />
       <IDSymbol name="cmdidMarkEnclosing" value="0x58" />
       <IDSymbol name="cmdidDeleteWholeLine" value="0x59" />
+      <IDSymbol name="cmdidVirtualCaretInsertAtPoint" value="0x60"/>
+      <IDSymbol name="cmdidVirtualCaretActivate" value="0x61"/>
 
     </GuidSymbol>
 

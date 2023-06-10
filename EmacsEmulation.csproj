@@ -220,6 +220,8 @@
   <ItemGroup>
     <Compile Include="Commands\Marks\MarkEnclosingCommand.cs" />
     <Compile Include="Commands\Marks\RectangleMarkModeCommand.cs" />
+    <Compile Include="Commands\Marks\VirtualCaretActivateCommand.cs" />
+    <Compile Include="Commands\Marks\VirtualCaretInsertAtPointCommand.cs" />
     <Compile Include="Commands\Misc\SelectAllCommand.cs" />
     <Compile Include="Commands\Navigation\BackToIndentationCommand.cs" />
     <Compile Include="Commands\Navigation\EnclosingNextCommand.cs" />
