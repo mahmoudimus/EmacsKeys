@@ -320,6 +320,11 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
             return view.Properties.GetOrCreateSingletonProperty<MarkSession>(() => new MarkSession(view, this));
         }
 
+        public MultipleCaretTagger GetMultipleCaretTagger(ITextView view)
+        {
+            return view.Properties.GetProperty<MultipleCaretTagger>(typeof(MultipleCaretTagger));
+        }
+
         public UniversalArgumentSession GetOrCreateUniversalArgumentSession(ITextView view)
         {
             return view.Properties.GetOrCreateSingletonProperty<UniversalArgumentSession>(() => new UniversalArgumentSession(view, this));
