@@ -44,16 +44,16 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
     /// </summary>
     public class MultipleCaretTagger : ITagger<MultipleCaretMarkerTag>
     {
-        private ITextView View { get; set; }
-        private ITextBuffer Buffer { get; set; }
+        private ITextView view;
+        private ITextBuffer buffer;
 
         // The position of each virtual caret
         public HashSet<ITrackingPoint> CaretPoints { get; private set; }
 
-        public MultipleCaretTagger(ITextView view, ITextBuffer buffer)
+        public MultipleCaretTagger(ITextView TextView, ITextBuffer TextBuffer)
         {
-            this.View = view;
-            this.Buffer = buffer;
+            this.view = TextView;
+            this.buffer = TextBuffer;
 
             this.CaretPoints = new HashSet<ITrackingPoint>();
         }
@@ -67,11 +67,6 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
             UpdateSpan();
         }
 
-        private ITrackingPoint CreateTrackingPoint(int position)
-        {
-            return View.TextSnapshot.CreateTrackingPoint(position, PointTrackingMode.Negative);
-        }
-
         /// <summary>
         /// Clears the current caret list
         /// </summary>
@@ -81,12 +76,17 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
             UpdateSpan();
         }
 
+        private ITrackingPoint CreateTrackingPoint(int position)
+        {
+            return this.view.TextSnapshot.CreateTrackingPoint(position, PointTrackingMode.Negative);
+        }
+
         /// <summary>
         /// Calls the TagsChanged method to update the view
         /// </summary>
         private void UpdateSpan()
         {
-            TagsChanged?.Invoke(this, new SnapshotSpanEventArgs(new SnapshotSpan(this.Buffer.CurrentSnapshot, 0, this.Buffer.CurrentSnapshot.Length)));
+            TagsChanged?.Invoke(this, new SnapshotSpanEventArgs(new SnapshotSpan(this.buffer.CurrentSnapshot, 0, this.buffer.CurrentSnapshot.Length)));
         }
 
         /// <summary>
