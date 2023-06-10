@@ -14,9 +14,9 @@ using EnvDTE;
 namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
 {
     /// <summary>
-    /// Places the mark at the end of the next balanced expression.
-    /// With a prefix arg, the command moves forward that many times, but if prefix arg is negative, it goes backwards that many.
-    /// The mark goes to the same place the caret would be placed with the EnclosingNextCommand.
+    /// Moves the mark to the next (forward or backward) balanced expression.
+    /// If there is no active selection, places the mark at the forward balanced expression.
+    /// With a prefix arg, the mark moves forward that many times, but if prefix arg is negative, it goes backwards that many.
     ///
     /// Keys: Ctrl+Alt+@ | Ctrl+Alt+Space
     /// </summary>
@@ -27,22 +27,36 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
         {
             DTE vs = context.Manager.ServiceProvider.GetService<DTE>();
             SnapshotPoint position = context.TextView.GetCaretPosition();
-            var arg = context.UniversalArgument.GetValueOrDefault(1);
 
-            for (int i =0; i < Math.Abs(arg); i++)
+            bool hasArgument = context.UniversalArgument.HasValue;
+            int arg = context.UniversalArgument.GetValueOrDefault(1);
+            bool backwards = (arg < 0);
+
+            if (context.MarkSession.IsActive)
             {
-                if (arg > 0)
+                // When there is an active selection, move the mark in order to expand the existing selection.
+                // However, if the user provided an argument, move in the specified direction instead.
+                SnapshotPoint markPosition = context.MarkSession.GetMarkPoint();
+                if (!hasArgument)
                 {
-                    position = context.EditorOperations.GetNextEnclosing(position, context.TextStructureNavigator, vs);
+                    backwards = (position > markPosition);
                 }
-                else if (arg < 0)
+                position = markPosition;
+            }
+
+            for (int i = Math.Abs(arg); i > 0; i--)
+            {
+                if (backwards)
                 {
                     position = context.EditorOperations.GetPreviousEnclosing(position, context.TextStructureNavigator, vs);
                 }
+                else
+                {
+                    position = context.EditorOperations.GetNextEnclosing(position, context.TextStructureNavigator, vs);
+                }
             }
 
-            context.MarkSession.PushMark(position, true);
-            context.MarkSession.Activate();
+            context.MarkSession.PushMark(position);
         }
     }
 }

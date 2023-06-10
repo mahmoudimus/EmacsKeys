@@ -35,7 +35,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
         {
             if (!view.Selection.IsEmpty && !this.IsActive)
             {
-                PushMark(view.Selection.Start.Position.Position);
+                PushMarkPoint(view.Selection.Start.Position.Position);
             }
             if (this.manager.AfterSearch)
             {
@@ -138,14 +138,24 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
         /// <param name="activateSession">False if the session should not be activated after pushing the mark</param>
         internal void PushMark(bool activateSession = true)
         {
-            DeactivateAfterSearch();
-            this.PushMark(this.view.GetCaretPosition(), activateSession);
+            PushMark(this.view.GetCaretPosition(), activateSession);
+        }
 
-            if(activateSession)
+        /// <summary>
+        /// Adds a mark to the location stack for the designated position. 
+        /// </summary>
+        /// <param name="position">The desired position to place the mark on</param>
+        /// <param name="activateSession">False if the session should not be activated after pushing the mark</param>
+        internal void PushMark(SnapshotPoint position, bool activateSession = true)
+        {
+            DeactivateAfterSearch();
+            this.PushMarkPoint(position, activateSession);
+
+            if (activateSession)
                 this.UpdateSelection();
         }
 
-        internal void PushMark(int position, bool activateSession = true)
+        private void PushMarkPoint(int position, bool activateSession = true)
         {
             this.marks.Push(this.activeMark);
             this.activeMark = this.currentMark = this.CreateTrackingPoint(position);
@@ -184,6 +194,14 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
             {            
                 this.activeMark = this.marks.Pop();
             }            
+        }
+
+        /// <summary>
+        /// Returns the position of the active mark
+        /// </summary>
+        internal SnapshotPoint GetMarkPoint()
+        {
+            return this.activeMark.GetPoint(this.view.TextSnapshot);
         }
 
         /// <summary>
