@@ -47,34 +47,29 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
         private ITextView View { get; set; }
         private ITextBuffer Buffer { get; set; }
 
-        // The position of each virtual caret, represented by a span starting at the
-        // desired position and with a size of 1.
-        private NormalizedSnapshotSpanCollection CaretSpans { get; set; }
+        // The position of each virtual caret
+        public HashSet<ITrackingPoint> CaretPoints { get; private set; }
 
         public MultipleCaretTagger(ITextView view, ITextBuffer buffer)
         {
             this.View = view;
             this.Buffer = buffer;
 
-            this.CaretSpans = new NormalizedSnapshotSpanCollection();
+            this.CaretPoints = new HashSet<ITrackingPoint>();
         }
-        
+
         /// <summary>
         /// Adds a new virtual caret at the designated position
         /// </summary>
         internal void AddMarkerAtPosition(SnapshotPoint position)
         {
-            List<SnapshotSpan> newCaretSpans = new List<SnapshotSpan>();
-            SnapshotSpan span = new SnapshotSpan(position, position + 1);
-
-            foreach (SnapshotSpan caret in this.CaretSpans)
-            {
-                newCaretSpans.Add(caret);
-            }
-            newCaretSpans.Add(span);
-
-            this.CaretSpans = new NormalizedSnapshotSpanCollection(newCaretSpans);
+            this.CaretPoints.Add(CreateTrackingPoint(position));
             UpdateSpan();
+        }
+
+        private ITrackingPoint CreateTrackingPoint(int position)
+        {
+            return View.TextSnapshot.CreateTrackingPoint(position, PointTrackingMode.Negative);
         }
 
         /// <summary>
@@ -82,7 +77,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
         /// </summary>
         internal void Clear()
         {
-            this.CaretSpans = new NormalizedSnapshotSpanCollection();
+            this.CaretPoints.Clear();
             UpdateSpan();
         }
 
@@ -100,20 +95,17 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
         /// <param name="spans">A read-only span of text to be searched for instances of CurrentWord</param>
         public IEnumerable<ITagSpan<MultipleCaretMarkerTag>> GetTags(NormalizedSnapshotSpanCollection spans)
         {
-            if (spans.Count == 0 || CaretSpans.Count == 0)
+            if (spans.Count == 0 || CaretPoints.Count == 0)
                 yield break;
 
-            // Translate the spans to a new collection when required
-            if (spans[0].Snapshot != this.CaretSpans[0].Snapshot)
-            {
-                CaretSpans = new NormalizedSnapshotSpanCollection(
-                    CaretSpans.Select(span => span.TranslateTo(spans[0].Snapshot, SpanTrackingMode.EdgeExclusive)));
-            }
+            var snapshot = spans[0].Snapshot;
 
-            // Yield all marker spans
-            foreach (SnapshotSpan span in NormalizedSnapshotSpanCollection.Overlap(spans, CaretSpans))
+            // Yield all markers
+            // Each marker is represented as a span starting at the desired position and with a size of 1.
+            foreach (ITrackingPoint point in this.CaretPoints)
             {
-                yield return new TagSpan<MultipleCaretMarkerTag>(span, new MultipleCaretMarkerTag());
+                SnapshotPoint position = point.GetPoint(snapshot);
+                yield return new TagSpan<MultipleCaretMarkerTag>(new SnapshotSpan(position, position + 1), new MultipleCaretMarkerTag());
             }
         }
 
