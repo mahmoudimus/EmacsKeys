@@ -33,7 +33,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
             DTE vs = context.Manager.ServiceProvider.GetService<DTE>();
 
             // First, add a caret at the position
-            caretTagger.AddMarkerAtPosition(context.TextView.GetCaretPosition());
+            caretTagger.AddMarker(context.TextView.GetCaretPosition());
 
             // Then, insert an unique identifier at each caret position
             foreach (ITrackingPoint point in caretTagger.CaretPoints)

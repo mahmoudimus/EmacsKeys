@@ -61,10 +61,30 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
         /// <summary>
         /// Adds a new virtual caret at the designated position
         /// </summary>
-        internal void AddMarkerAtPosition(SnapshotPoint position)
+        internal void AddMarker(SnapshotPoint position)
         {
             this.CaretPoints.Add(CreateTrackingPoint(position));
             UpdateSpan();
+        }
+
+        /// <summary>
+        /// Removes the marker with the designated position
+        /// </summary>
+        /// <param name="position"></param>
+        internal void RemoveMarker(SnapshotPoint position)
+        {
+            this.CaretPoints.RemoveWhere(point => point.GetPoint(position.Snapshot) == position);
+            UpdateSpan();
+        }
+
+        /// <summary>
+        /// Checks if there is a marker with the designated position
+        /// </summary>
+        /// <param name="position"></param>
+        /// <returns></returns>
+        internal bool HasMarker(SnapshotPoint position)
+        {
+            return this.CaretPoints.Any(point => point.GetPoint(position.Snapshot) == position);
         }
 
         /// <summary>
