@@ -84,5 +84,6 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
         BackToIndentation = 0x56,
         DeleteOtherWindow = 0x57,
         MarkEnclosing = 0x58,
+        DeleteWholeLine = 0x59,
     }
 }

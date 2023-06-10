@@ -213,6 +213,14 @@
               <ButtonText>EmacsMarkEnclosing</ButtonText>
           </Strings>
       </Button>
+
+      <Button guid="guidEmacsEmulationsCmdSet" id="cmdidDeleteWholeLine" priority="0x0100" type="Button">
+          <Parent guid="guidEmacsEmulationsCmdSet" id="EmacsEmulationsMenuGroup" />
+          <CommandFlag>CommandWellOnly</CommandFlag>
+          <Strings>
+              <ButtonText>EmacsDeleteWholeLine</ButtonText>
+          </Strings>
+      </Button>
     </Buttons>
 
 
@@ -331,6 +339,11 @@
       mod1="CONTROL" key1="X" mod2="CONTROL" key2="L"
       editor="GUID_TextEditorFactory" />
 
+    <KeyBinding guid="guidEmacsEmulationsCmdSet"
+      id="cmdidDeleteWholeLine"
+      mod1="CONTROL SHIFT" key1="VK_BACK"
+      editor="GUID_TextEditorFactory" />
+
     <!--
         Bindings to existing VS commands
     -->
@@ -348,11 +361,6 @@
       id="cmdidNavigateToFile"
       mod1="CONTROL" key1="X" key2="F"
       editor="guidVSStd97" />
-
-    <KeyBinding guid="guidVSStd2K"
-      id="ECMD_DELETELINE"
-      mod1="CONTROL SHIFT" key1="VK_BACK"
-      editor="GUID_TextEditorFactory" />
   </KeyBindings>
 
 
@@ -387,6 +395,7 @@
       <IDSymbol name="cmdidBackToIndentation" value="0x56" />
       <IDSymbol name="cmdidDeleteOtherWindow" value="0x57" />
       <IDSymbol name="cmdidMarkEnclosing" value="0x58" />
+      <IDSymbol name="cmdidDeleteWholeLine" value="0x59" />
 
     </GuidSymbol>
 

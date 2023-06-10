@@ -228,6 +228,7 @@
     <Compile Include="Commands\Navigation\ParagraphPreviousCommand.cs" />
     <Compile Include="Commands\Text\CapitalizeSelectionCommand.cs" />
     <Compile Include="Commands\Text\DeleteBackwardsCommand.cs" />
+    <Compile Include="Commands\Text\DeleteWholeLineCommand.cs" />
     <Compile Include="Commands\Text\LowercaseSelectionCommand.cs" />
     <Compile Include="Commands\Text\EnclosingDeleteToEndCommand.cs" />
     <Compile Include="Commands\Text\EnclosingDeleteToStartCommand.cs" />
