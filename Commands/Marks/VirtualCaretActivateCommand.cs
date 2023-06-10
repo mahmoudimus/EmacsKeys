@@ -12,6 +12,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
 {
     /// <summary>
     /// Insert virtual caret at point, and then turns all virtual carets into actual carets.
+    /// If there are no virtual carets, inserts a caret at the next matching point instead.
     /// 
     /// Keys: Ctrl+M Ctrl+Space
     /// </summary>
@@ -21,16 +22,17 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
         internal override void Execute(EmacsCommandContext context)
         {
             Shell.ThreadHelper.ThrowIfNotOnUIThread();
+            DTE vs = context.Manager.ServiceProvider.GetService<DTE>();
             var caretTagger = context.Manager.GetMultipleCaretTagger(context.TextView);
 
             if (caretTagger == null || caretTagger.CaretPoints.Count == 0)
             {
+                vs.ExecuteCommand("Edit.InsertNextMatchingCaret");
                 return;
             }
 
             String identifier = "\u0000";
             var selection = context.TextView.Selection;
-            DTE vs = context.Manager.ServiceProvider.GetService<DTE>();
 
             // First, add a caret at the position
             caretTagger.AddMarker(context.TextView.GetCaretPosition());
