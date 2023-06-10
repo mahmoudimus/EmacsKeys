@@ -145,7 +145,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
                 this.UpdateSelection();
         }
 
-        private void PushMark(int position, bool activateSession = true)
+        internal void PushMark(int position, bool activateSession = true)
         {
             this.marks.Push(this.activeMark);
             this.activeMark = this.currentMark = this.CreateTrackingPoint(position);

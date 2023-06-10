@@ -83,5 +83,6 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
         CapitalizeSelection = 0x55,
         BackToIndentation = 0x56,
         DeleteOtherWindow = 0x57,
+        MarkEnclosing = 0x58,
     }
 }
