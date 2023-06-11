@@ -22,7 +22,8 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
     {
         internal override void Execute(EmacsCommandContext context)
         {
-            if (context.MarkSession.IsActive && context.TextView.Selection.Mode == TextSelectionMode.Box)
+            if (context.MarkSession.IsActive && context.TextView.Selection.Mode == TextSelectionMode.Box ||
+                context.TextView.Selection.SelectedSpans.Count() > 1)
             {
                 // Edit.WordDeleteToEnd does not exactly match our specs (see WordNextCommand).
                 // Looping execution also creates multiple undo entries, which can be annoying

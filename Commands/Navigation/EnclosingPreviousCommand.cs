@@ -25,6 +25,14 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
         internal override void Execute(EmacsCommandContext context)
         {
             DTE vs = context.Manager.ServiceProvider.GetService<DTE>();
+
+            if (context.TextView.Selection.SelectedSpans.Count() > 1)
+            {
+                // TODO: proper support s-expression navigation with multiple carets
+                vs.ExecuteCommand("Edit.WordPreviousExtend");
+                return;
+            }
+
             var position = context.EditorOperations.GetPreviousEnclosing(context.TextStructureNavigator, vs);
             context.EditorOperations.MoveCaret(position);
 

@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.Text.Formatting;
 using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
+using EnvDTE;
 
 namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
 {
@@ -27,6 +28,15 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
             // For example: When the caret is at the indent position of a line, this command
             // move the caret to the beginning of the previous word in the previous line.
             // EditorOperations moves the caret to the beggining of the line instead.
+
+            if (context.TextView.Selection.SelectedSpans.Count() > 1)
+            {
+                // Although not a perfect match for the our specifications, the Edit.WordPrevious
+                // command provides easy support for multiline caret operations.
+                DTE vs = context.Manager.ServiceProvider.GetService<DTE>();
+                vs.ExecuteCommand("Edit.WordPreviousExtend");
+                return;
+            }
 
             var word = context.TextStructureNavigator.GetPreviousWord(context.EditorOperations);
 

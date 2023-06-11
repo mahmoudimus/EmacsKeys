@@ -23,9 +23,21 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
     {
         internal override void Execute(EmacsCommandContext context)
         {
+            DTE vs = context.Manager.ServiceProvider.GetService<DTE>();
+
+            if (context.MarkSession.IsActive && context.TextView.Selection.Mode == TextSelectionMode.Box ||
+                context.TextView.Selection.SelectedSpans.Count() > 1)
+            {
+                // TODO: add proper support for s-expression with multiple carets
+                for (int i = 0; i < context.Manager.GetUniversalArgumentOrDefault(1); i++)
+                {
+                    context.CommandRouter.ExecuteDTECommand("Edit.WordDeleteToStart");
+                }
+                return;
+            }
+
             var caretPosition = context.TextView.GetCaretPosition();
             var position = caretPosition;
-            DTE vs = context.Manager.ServiceProvider.GetService<DTE>();
 
             for (var counter = context.Manager.GetUniversalArgumentOrDefault(1); counter > 0; counter--)
             {

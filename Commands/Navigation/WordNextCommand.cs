@@ -9,6 +9,7 @@ using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Operations;
+using EnvDTE;
 
 namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
 {
@@ -28,6 +29,15 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
             // For example: When the caret is in the middle of a word this command should
             // move the caret to the end of the same word. EditorOperations moves the caret
             // to the next word instead.
+
+            if (context.TextView.Selection.SelectedSpans.Count() > 1)
+            {
+                // Although not a perfect match for the our specifications, the Edit.WordNext
+                // command provides easy support for multiline caret operations.
+                DTE vs = context.Manager.ServiceProvider.GetService<DTE>();
+                vs.ExecuteCommand("Edit.WordNextExtend");
+                return;
+            }
 
             var word = context.TextStructureNavigator.GetNextWord(context.EditorOperations);
 
