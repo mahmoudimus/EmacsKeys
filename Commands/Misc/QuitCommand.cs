@@ -20,6 +20,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
         internal override void Execute(EmacsCommandContext context)
         {
             context.Manager.ClearStatus();
+            context.Manager.GetMultipleCaretTagger(context.TextView)?.Clear();
             // Other commands may listen the execution of the quit command and cancel their execution
         }
     }
