@@ -383,10 +383,15 @@
       mod1="CONTROL" key1="X" key2="F"
       editor="GUID_TextEditorFactory" />
 
-      <KeyBinding guid="guidVSStd15"
+    <KeyBinding guid="guidVSStd15"
       id="cmdidNavigateToFile"
       mod1="CONTROL" key1="X" key2="F"
       editor="guidVSStd97" />
+
+    <KeyBinding guid="guidVSStd97"
+      id="cmdidFind"
+      mod1="CONTROL ALT" key1="S"
+      editor="GUID_TextEditorFactory" />
   </KeyBindings>
 
 
