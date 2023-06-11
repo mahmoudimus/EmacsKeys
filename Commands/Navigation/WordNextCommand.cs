@@ -29,7 +29,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
             // move the caret to the end of the same word. EditorOperations moves the caret
             // to the next word instead.
 
-            var word = context.TextStructureNavigator.GetNextWord(context.TextView);
+            var word = context.TextStructureNavigator.GetNextWord(context.EditorOperations);
 
             if (word.HasValue)
             {

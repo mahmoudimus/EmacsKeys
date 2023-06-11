@@ -19,11 +19,12 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
     {
         internal override void Execute(EmacsCommandContext context)
         {
-            var previousWordSpan = context.TextStructureNavigator.GetPreviousWord(context.TextView);
+            var previousWordSpan = context.TextStructureNavigator.GetPreviousWord(context.EditorOperations);
 
-            if (previousWordSpan.HasValue && previousWordSpan.Value.IntersectsWith(new Span(context.TextView.GetCaretPosition(), 1)))
+            if (previousWordSpan.HasValue)
             {
-                var nextWordSpan = context.TextStructureNavigator.GetNextWord(previousWordSpan.Value.End);
+                var position = context.EditorOperations.GetNextAlphanumericCharacter(previousWordSpan.Value.End);
+                var nextWordSpan = context.TextStructureNavigator.GetNextWord(position);
 
                 if (nextWordSpan.HasValue)
                 {

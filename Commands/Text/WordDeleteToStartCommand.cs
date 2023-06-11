@@ -39,9 +39,12 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
             for (var counter = context.Manager.GetUniversalArgumentOrDefault(1); counter > 0; counter--)
             {
                 if (word.HasValue)
-                    word = context.TextStructureNavigator.GetPreviousWord(word.Value.Start);
+                {
+                    var position = context.EditorOperations.GetPreviousAlphanumericCharacter(word.Value.Start);
+                    word = context.TextStructureNavigator.GetPreviousWord(position);
+                }
                 else
-                    word = context.TextStructureNavigator.GetPreviousWord(context.TextView);
+                    word = context.TextStructureNavigator.GetPreviousWord(context.EditorOperations);
             }
 
             if (word.HasValue)

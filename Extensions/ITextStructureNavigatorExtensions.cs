@@ -12,9 +12,9 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
 {
     internal static class ITextStructureNavigatorExtensions
     {
-        internal static SnapshotSpan? GetPreviousWord(this ITextStructureNavigator navigator, ITextView view)
+        internal static SnapshotSpan? GetPreviousWord(this ITextStructureNavigator navigator, IEditorOperations editorOperations)
         {
-            return navigator.GetPreviousWord(view.GetCaretPosition());
+            return navigator.GetPreviousWord(editorOperations.GetPreviousAlphanumericCharacter());
         }
 
         internal static SnapshotSpan? GetPreviousWord(this ITextStructureNavigator navigator, SnapshotPoint position)
@@ -28,9 +28,9 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
             return word.IsSignificant ? new SnapshotSpan?(word.Span) : null;
         }
 
-        internal static SnapshotSpan? GetNextWord(this ITextStructureNavigator navigator, ITextView view)
+        internal static SnapshotSpan? GetNextWord(this ITextStructureNavigator navigator, IEditorOperations editorOperations)
         {
-            return navigator.GetNextWord(view.GetCaretPosition());
+            return navigator.GetNextWord(editorOperations.GetNextAlphanumericCharacter());
         }
 
         internal static SnapshotSpan? GetNextWord(this ITextStructureNavigator navigator, SnapshotPoint position)

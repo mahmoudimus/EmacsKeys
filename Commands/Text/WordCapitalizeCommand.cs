@@ -24,7 +24,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
     {
         internal override void Execute(EmacsCommandContext context)
         {
-            var word = context.TextStructureNavigator.GetNextWord(context.TextView);
+            var word = context.TextStructureNavigator.GetNextWord(context.EditorOperations);
 
             if(word.HasValue)
             {
@@ -41,7 +41,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
 
         internal override void ExecuteInverse(EmacsCommandContext context)
         {
-            var word = context.TextStructureNavigator.GetPreviousWord(context.TextView);
+            var word = context.TextStructureNavigator.GetPreviousWord(context.EditorOperations);
 
             if (word.HasValue)
             {

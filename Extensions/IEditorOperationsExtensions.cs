@@ -135,11 +135,11 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
             editorOperations.MoveToPreviousCharacter(ShouldExtendSelection(editorOperations));
         }
 
-        internal static SnapshotPoint GetNextNonWhiteSpaceCharacter(this IEditorOperations editorOperations, SnapshotPoint position)
+        private static SnapshotPoint GetNextCharacter(this IEditorOperations editorOperations, SnapshotPoint position, Func<Char, bool> predicate)
         {
             try
             {
-                while (Char.IsWhiteSpace(position.GetChar()))
+                while (!predicate(position.GetChar()))
                 {
                     position += 1;
                 }
@@ -151,11 +151,11 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
             return position;
         }
 
-        internal static SnapshotPoint GetPreviousNonWhiteSpaceCharacter(this IEditorOperations editorOperations, SnapshotPoint position)
+        private static SnapshotPoint GetPreviousCharacter(this IEditorOperations editorOperations, SnapshotPoint position, Func<Char, bool> predicate)
         {
             try
             {
-                while (Char.IsWhiteSpace((position - 1).GetChar()))
+                while (!predicate((position - 1).GetChar()))
                 {
                     position -= 1;
                 }
@@ -167,6 +167,26 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
             return position;
         }
 
+        internal static SnapshotPoint GetNextNonWhiteSpaceCharacter(this IEditorOperations editorOperations, SnapshotPoint position)
+        {
+            return GetNextCharacter(editorOperations, position, letter => !Char.IsWhiteSpace(letter));
+        }
+
+        internal static SnapshotPoint GetPreviousNonWhiteSpaceCharacter(this IEditorOperations editorOperations, SnapshotPoint position)
+        {
+            return GetPreviousCharacter(editorOperations, position, letter => !Char.IsWhiteSpace(letter));
+        }
+
+        internal static SnapshotPoint GetNextAlphanumericCharacter(this IEditorOperations editorOperations, SnapshotPoint position)
+        {
+            return GetNextCharacter(editorOperations, position, Char.IsLetterOrDigit);
+        }
+
+        internal static SnapshotPoint GetPreviousAlphanumericCharacter(this IEditorOperations editorOperations, SnapshotPoint position)
+        {
+            return GetPreviousCharacter(editorOperations, position, Char.IsLetterOrDigit);
+        }
+
         internal static SnapshotPoint GetNextNonWhiteSpaceCharacter(this IEditorOperations editorOperations)
         {
             return GetNextNonWhiteSpaceCharacter(editorOperations, editorOperations.TextView.Caret.Position.BufferPosition);
@@ -175,6 +195,16 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
         internal static SnapshotPoint GetPreviousNonWhiteSpaceCharacter(this IEditorOperations editorOperations)
         {
             return GetPreviousNonWhiteSpaceCharacter(editorOperations, editorOperations.TextView.Caret.Position.BufferPosition);
+        }
+
+        internal static SnapshotPoint GetNextAlphanumericCharacter(this IEditorOperations editorOperations)
+        {
+            return GetNextAlphanumericCharacter(editorOperations, editorOperations.TextView.Caret.Position.BufferPosition);
+        }
+
+        internal static SnapshotPoint GetPreviousAlphanumericCharacter(this IEditorOperations editorOperations)
+        {
+            return GetPreviousAlphanumericCharacter(editorOperations, editorOperations.TextView.Caret.Position.BufferPosition);
         }
 
         internal static void MoveToNextNonWhiteSpaceCharacter(this IEditorOperations editorOperations)
@@ -274,7 +304,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
                 }
             }
 
-            var word = navigator.GetNextWord(startPosition);
+            var word = navigator.GetNextWord(editorOperations.GetNextAlphanumericCharacter(startPosition));
 
             if (word.HasValue)
             {
@@ -311,7 +341,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
                 }
             }
 
-            var word = navigator.GetPreviousWord(endPosition);
+            var word = navigator.GetPreviousWord(editorOperations.GetPreviousAlphanumericCharacter(endPosition));
 
             if (word.HasValue)
             {

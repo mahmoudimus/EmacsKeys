@@ -28,7 +28,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
             // move the caret to the beginning of the previous word in the previous line.
             // EditorOperations moves the caret to the beggining of the line instead.
 
-            var word = context.TextStructureNavigator.GetPreviousWord(context.TextView);
+            var word = context.TextStructureNavigator.GetPreviousWord(context.EditorOperations);
 
             if (word.HasValue)
             {
