@@ -63,7 +63,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
         /// </summary>
         internal void AddMarker(SnapshotPoint position)
         {
-            this.CaretPoints.Add(CreateTrackingPoint(position));
+            this.CaretPoints.Add(view.CreateTrackingPoint(position));
             UpdateSpan();
         }
 
@@ -94,11 +94,6 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
         {
             this.CaretPoints.Clear();
             UpdateSpan();
-        }
-
-        private ITrackingPoint CreateTrackingPoint(int position)
-        {
-            return this.view.TextSnapshot.CreateTrackingPoint(position, PointTrackingMode.Negative);
         }
 
         /// <summary>

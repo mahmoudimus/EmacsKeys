@@ -93,6 +93,16 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
             }
         }
 
+        internal static ITrackingPoint CreateTrackingPoint(this ITextView view, int position)
+        {
+            return view.TextSnapshot.CreateTrackingPoint(position, PointTrackingMode.Negative);
+        }
+
+        internal static ITrackingPoint CreateTrackingPoint(this ITextView view)
+        {
+            return view.TextSnapshot.CreateTrackingPoint(view.Caret.Position.BufferPosition, PointTrackingMode.Negative);
+        }
+
         #endregion
     }
 }

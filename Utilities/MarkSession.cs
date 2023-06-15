@@ -28,7 +28,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
             this.view = view;
             this.view.Selection.SelectionChanged += new EventHandler(Selection_SelectionChanged);
 
-            this.activeMark = this.currentMark = CreateTrackingPoint(0);
+            this.activeMark = this.currentMark = view.CreateTrackingPoint(0);
         }
 
         void Selection_SelectionChanged(object sender, EventArgs e)
@@ -115,7 +115,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
         internal void SwapPointAndMark()
         {
             var previousActiveMark = this.activeMark;
-            this.activeMark = this.currentMark = CreateTrackingPoint(view.GetCaretPosition());
+            this.activeMark = this.currentMark = view.CreateTrackingPoint();
             this.view.Caret.MoveTo(previousActiveMark.GetPoint(view.TextSnapshot));
             this.IsActive = true;
             UpdateSelection();
@@ -125,11 +125,6 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
         {
             this.IsActive = true;
             UpdateSelection();
-        }
-
-        private ITrackingPoint CreateTrackingPoint(int position)
-        {
-            return view.TextSnapshot.CreateTrackingPoint(position, PointTrackingMode.Negative);
         }
 
         /// <summary>
@@ -158,7 +153,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
         private void PushMarkPoint(int position, bool activateSession = true)
         {
             this.marks.Push(this.activeMark);
-            this.activeMark = this.currentMark = this.CreateTrackingPoint(position);
+            this.activeMark = this.currentMark = view.CreateTrackingPoint(position);
 
             if(activateSession)
                 this.IsActive = true;
@@ -178,7 +173,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
             }
             else
             {
-                this.currentMark = activeMark = CreateTrackingPoint(0);
+                this.currentMark = activeMark = view.CreateTrackingPoint(0);
             }
 
             this.view.Caret.MoveTo(activeMark.GetPoint(this.view.TextSnapshot));
