@@ -16,7 +16,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
 	/// 
 	/// Keys: Delete
 	/// </summary>
-	[EmacsCommand(VSConstants.VSStd97CmdID.Delete, IsKillCommand = true, CanBeRepeated = true, UndoName="Delete")]
+	[EmacsCommand(VSConstants.VSStd97CmdID.Delete, IsKillCommand = false, CanBeRepeated = true, UndoName="Delete")]
 	internal class DeleteCommand : EmacsCommand
 	{
 		internal override void Execute(EmacsCommandContext context)
