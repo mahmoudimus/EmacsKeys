@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.Text;
+﻿using System;
+using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods;
 using Microsoft.VisualStudio.Shell;
@@ -22,17 +23,18 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
         internal override void Execute(EmacsCommandContext context)
         {
             ITextSelection selection = context.TextView.Selection;
-            bool trackCaret = true;
-            bool markSessionActive = context.MarkSession.IsActiveAndValid();
+            var position = context.TextView.CreateTrackingPoint();
+            var line = context.EditorOperations.GetCaretPhysicalLine();
 
             // Return immediately if the buffer is read-only.
-            if (context.TextBuffer.IsReadOnly(selection.Start.Position.GetContainingLine().Extent))
+            if (context.TextBuffer.IsReadOnly(line.Extent))
             {
                 return;
             }
 
-            // If there's a multi-line selection, use the format command and quit
-            // If there's not a multi-line selection, then clear it and setup for line indentation
+            // If there's a multi-line selection, use the Edit.FormatSelection command and quit
+            // Otherwise, clear the selection to avoid messing up with other formatting aspects
+            // not related to the indentation.
             if (!selection.IsEmpty)
             {
                 VirtualSnapshotSpan selectionSpan = selection.StreamSelectionSpan;
@@ -41,117 +43,56 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
                 {
                     DTE vs = context.Manager.ServiceProvider.GetService<DTE>();
                     vs.ExecuteCommand("Edit.FormatSelection");
-                    vs.ExecuteCommand("Edit.SelectionCancel");
+                    context.MarkSession.Deactivate();
+
+                    // After executing the Edit.FormatSelection command, the caret is always
+                    // placed at the end of the selection. Move it back to the starting point.
+                    context.EditorOperations.MoveCaret(position.GetPosition(context.TextView.TextSnapshot));
                     return;
                 }
-
-                selection.Clear();
-
-                // Since there was a selection on the line before the format, we are not obligated to place the caret at a specific place
-                // after the format operation is done
-                trackCaret = false;
+                context.MarkSession.Deactivate();
             }
 
-            // Strip any existing whitespace to setup the line for formatting
-            this.StripWhiteSpace(context.TextView.GetCaretPosition().GetContainingLine());
-
-            int? indentation = context.Manager.SmartIndentationService.GetDesiredIndentation(context.TextView, context.TextView.GetCaretPosition().GetContainingLine());
-
-            if (indentation.HasValue)
+            if (String.IsNullOrWhiteSpace(line.GetText()))
             {
-                // Insert the desired indentation level
-                context.TextBuffer.Insert(context.TextView.GetCaretPosition().GetContainingLine().Start, new string(' ', indentation.Value));
+                int? indentation = context.Manager.SmartIndentationService.GetDesiredIndentation(context.TextView, line);
+                context.EditorOperations.Delete(line.Extent);
+                if (indentation.HasValue)
+                {
+                    var startPosition = context.TextView.GetCaretPosition().GetContainingLine().Start.Position;
+                    context.TextBuffer.Insert(startPosition, new String(' ', indentation.Value));
+                    context.EditorOperations.MoveCaret(startPosition + indentation.Value);
+                }
+                else
+                {
+                    // We couldn't find any indentation level for the line, try the Indent command as the last resort
+                    context.EditorOperations.Indent();
+                }
 
                 // Finally, are any tab/spaces conversions necessary?
                 if (!context.TextView.Options.IsConvertTabsToSpacesEnabled())
                 {
+                    position = context.TextView.CreateTrackingPoint(PointTrackingMode.Positive);
                     context.EditorOperations.ConvertSpacesToTabs();
+                    context.EditorOperations.MoveCaret(position.GetPosition(context.TextView.TextSnapshot));
                 }
+                return;
             }
-            else
+
+            // SmartIndentationService seldom returns a value, and is not
+            // smart enough to distinguish between tabs and spaces based
+            // on the file context. Prefer Edit.FormatSelection on most cases.
+            context.CommandRouter.ExecuteDTECommand("Edit.FormatSelection");
+
+            // Recalculate the new indent position
+            line = context.EditorOperations.GetCaretPhysicalLine();
+            var indentPosition = context.EditorOperations.GetNextNonWhiteSpaceCharacter(line.Start);
+
+            // Move the caret forward when needed
+            if (indentPosition > position.GetPoint(context.TextView.TextSnapshot))
             {
-                // We couldn't find any indentation level for the line, try executing the format command as the last resort
-
-                // Remember caret position
-                int caretOffsetFromStart = 0;
-
-                if (trackCaret)
-                {
-                    CaretPosition positionBeforeChange = context.TextView.Caret.Position;
-                    context.EditorOperations.MoveToStartOfLineAfterWhiteSpace(false);
-                    caretOffsetFromStart = positionBeforeChange.BufferPosition.Position - context.TextView.GetCaretPosition();
-                }
-
-                // Format
-                context.EditorOperations.SelectAndMoveCaret(
-                    new VirtualSnapshotPoint(context.TextView.GetCaretPosition().GetContainingLine().Start, 0),
-                    new VirtualSnapshotPoint(context.TextView.GetCaretPosition().GetContainingLine().End, 0));
-
-                context.CommandRouter.ExecuteDTECommand("Edit.FormatSelection");
-
-                // Move to beginning of newly indented line after format operation is done
-                context.EditorOperations.MoveToStartOfLineAfterWhiteSpace(false);
-
-                // Restore the position of the caret
-                if (caretOffsetFromStart > 0)
-                {
-                    context.EditorOperations.MoveCaret(context.TextView.Caret.Position.BufferPosition + caretOffsetFromStart, false);
-                }
+                context.EditorOperations.MoveCaret(indentPosition);
             }
-
-            // Ensure we restore the state of the mark session after the formatting operation (changing selection activates
-            // the mark session automatically and we change the selection during our formatting operation).
-            if (!markSessionActive)
-            {
-                context.MarkSession.Deactivate();
-            }
-        }
-
-        /// <summary>
-        /// Removes white space from both ends of a line.
-        /// </summary>
-        private void StripWhiteSpace(ITextSnapshotLine line)
-        {
-            ITextSnapshot snapshot = line.Snapshot;
-            ITextBuffer buffer = snapshot.TextBuffer;
-
-            int forwardIterator;
-            int backwardIterator;
-
-            // Detect spaces at the beginning
-            forwardIterator = line.Start.Position;
-            while (forwardIterator < line.End.Position && IsSpaceCharacter(snapshot[forwardIterator]))
-            {
-                ++forwardIterator;
-            }
-
-            // Detect spaces at the end
-            backwardIterator = line.End.Position - 1;
-            while (backwardIterator > forwardIterator && IsSpaceCharacter(snapshot[backwardIterator]))
-            {
-                --backwardIterator;
-            }
-
-            if ((backwardIterator != line.End.Position - 1) || (forwardIterator != line.Start.Position))
-            {
-                using (ITextEdit edit = buffer.CreateEdit())
-                {
-                    edit.Delete(Span.FromBounds(backwardIterator + 1, line.End.Position));
-                    edit.Delete(Span.FromBounds(line.Start.Position, forwardIterator));
-
-                    edit.Apply();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Copied from EditorOperations. Custom definition for Orcas parity.
-        /// </summary>
-        private static bool IsSpaceCharacter(char c)
-        {
-            return c == '\t' ||
-                   (int)c == 0x200B ||
-                   char.GetUnicodeCategory(c) == UnicodeCategory.SpaceSeparator;
         }
     }
 }
