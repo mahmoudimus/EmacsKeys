@@ -237,6 +237,14 @@
               <ButtonText>EmacsVirtualCaretActivate</ButtonText>
           </Strings>
       </Button>
+
+      <Button guid="guidEmacsEmulationsCmdSet" id="cmdidToggleWindowSplitLayout" priority="0x0100" type="Button">
+          <Parent guid="guidEmacsEmulationsCmdSet" id="EmacsEmulationsMenuGroup" />
+          <CommandFlag>CommandWellOnly</CommandFlag>
+          <Strings>
+              <ButtonText>EmacsToggleWindowSplitLayout</ButtonText>
+          </Strings>
+      </Button>
     </Buttons>
 
 
@@ -268,6 +276,11 @@
     <KeyBinding guid="guidEmacsEmulationsCmdSet"
           id="cmdidSplitHorizontal"
           mod1="CONTROL" key1="X" key2="3"
+          editor="GUID_TextEditorFactory" />
+
+    <KeyBinding guid="guidEmacsEmulationsCmdSet"
+          id="cmdidToggleWindowSplitLayout"
+          mod1="CONTROL" key1="X" key2="4"
           editor="GUID_TextEditorFactory" />
 
     <KeyBinding guid="guidEmacsEmulationsCmdSet"
@@ -429,6 +442,7 @@
       <IDSymbol name="cmdidDeleteWholeLine" value="0x59" />
       <IDSymbol name="cmdidVirtualCaretInsertAtPoint" value="0x60"/>
       <IDSymbol name="cmdidVirtualCaretActivate" value="0x61"/>
+      <IDSymbol name="cmdidToggleWindowSplitLayout" value="0x62"/>
 
     </GuidSymbol>
 

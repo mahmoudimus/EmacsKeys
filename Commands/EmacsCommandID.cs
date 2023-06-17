@@ -88,5 +88,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
 
         VirtualCaretInsertAtPoint = 0x60,
         VirtualCaretActivate = 0x61,
+
+        ToggleWindowSplitLayout = 0x62,
     }
 }

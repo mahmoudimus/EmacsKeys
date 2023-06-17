@@ -151,5 +151,59 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
 
             nextPane.Window.Activate();
         }
+
+        public void ToggleSplitLayout()
+        {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
+            var panes = this.tabNavigator.GetActivePanes(dte).ToList();
+
+            // TODO: currently only support two panes
+            if (panes.Count != 2)
+            {
+                return;
+            }
+
+            // TODO: this implementation only swaps the active panes.
+            // All panes that are opened in other tab groups but are
+            // not active are merged into the 'main' window.
+            void MaybeToggleLayout(Func<TabNavigator.ActivePane, int> orderFunction, String command)
+            {
+                if (orderFunction(panes[0]) == orderFunction(panes[1]))
+                {
+                    // Both panes have the same alignment.
+                    // Not the group that we are searching for.
+                    return;
+                }
+
+                var activeWindow = dte.ActiveWindow;
+                var orderedPanes = panes.OrderBy(orderFunction).ToList();
+                var isFirstPane = (activeWindow == orderedPanes[0].Window);
+
+                if (isFirstPane)
+                {
+                    // The active window is the first on the order.
+                    // Merge to the next tab group
+                    dte.ExecuteCommand("Window.MoveAllToNextTabGroup");
+                }
+                else
+                {
+                    // The active window is the last on the order.
+                    // Merge to the previous tab group.
+                    dte.ExecuteCommand("Window.MoveAllToPreviousTabGroup");
+                }
+
+                if (isFirstPane) orderedPanes[1].Window.Activate();
+                dte.ExecuteCommand(command);
+                if (isFirstPane) activeWindow.Activate();
+            };
+
+            // Multiple horizontal splits.
+            // Turn into vertical split (horizontal tab groups).
+            MaybeToggleLayout(pane => pane.Bounds.left, "Window.NewHorizontalTabGroup");
+
+            // Multiple vertical splits.
+            // Turn into horizontal split (vertical tab groups).
+            MaybeToggleLayout(pane => pane.Bounds.top, "Window.NewVerticalTabGroup");
+        }
     }
 }
