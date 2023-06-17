@@ -32,6 +32,35 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
                    select window;
         }
 
+        public SplitLayout GetSplitLayout()
+        {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
+            var panes = this.tabNavigator.GetActivePanes(dte).ToList();
+            int numPanes = panes.Count();
+
+            if (numPanes == 0)
+            {
+                return SplitLayout.Invalid;
+            }
+
+            if (numPanes == 1)
+            {
+                return SplitLayout.Single;
+            }
+
+            if (panes.Skip(1).Any(pane => pane.Bounds.left != panes[0].Bounds.left))
+            {
+                return SplitLayout.Horizontal;
+            }
+
+            if (panes.Skip(1).Any(pane => pane.Bounds.top != panes[0].Bounds.top))
+            {
+                return SplitLayout.Vertical;
+            }
+
+            return SplitLayout.Invalid;
+        }
+
         public bool? IsSingleVerticalPane()
         {
             Shell.ThreadHelper.ThrowIfNotOnUIThread();
@@ -63,31 +92,66 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
             return !(panes.Skip(1).Any());
         }
 
-        public bool? IsLeftPane(Window activeWindow)
+        private bool? IsFirstPaneInOrder(Window activeWindow, Func<TabNavigator.ActivePane, int> orderFunction)
         {
-            Shell.ThreadHelper.ThrowIfNotOnUIThread();
-            var panes = this.tabNavigator.GetActivePanes(dte);
-
-            var leftPane = panes.OrderBy(pane => pane.Bounds.left).FirstOrDefault();
-            
-            if (leftPane == null)
+            if (activeWindow == null || activeWindow.Type != vsWindowType.vsWindowTypeDocument)
             {
                 return null;
             }
 
-            return leftPane.Window == activeWindow;
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
+            var panes = this.tabNavigator.GetActivePanes(dte);
+
+            var firstPane = panes.OrderBy(orderFunction).FirstOrDefault();
+
+            if (firstPane == null)
+            {
+                return null;
+            }
+
+            return firstPane.Window == activeWindow;
+        }
+
+        public bool? IsLeftPane(Window activeWindow)
+        {
+            return IsFirstPaneInOrder(activeWindow, pane => pane.Bounds.left);
         }
 
         public bool? IsLeftPane()
         {
-            Shell.ThreadHelper.ThrowIfNotOnUIThread();
-            if (dte.ActiveWindow == null ||
-                dte.ActiveWindow.Type != vsWindowType.vsWindowTypeDocument)
+            return IsLeftPane(dte.ActiveWindow);
+        }
+
+        public bool? IsTopPane(Window activeWindow)
+        {
+            return IsFirstPaneInOrder(activeWindow, pane => pane.Bounds.top);
+        }
+
+        public bool? IsTopPane()
+        {
+            return IsTopPane(dte.ActiveWindow);
+        }
+
+        public bool? IsFirstPane(Window activeWindow, SplitLayout layout)
+        {
+            switch (layout)
             {
-                return null;
+                case SplitLayout.Single:
+                    return true;
+                case SplitLayout.Horizontal:
+                    return IsLeftPane(activeWindow);
+                case SplitLayout.Vertical:
+                    return IsTopPane(activeWindow);
+                case SplitLayout.Invalid:
+                    return null;
             }
 
-            return IsLeftPane(dte.ActiveWindow);
+            return null;
+        }
+
+        public bool? IsFirstPane()
+        {
+            return IsFirstPane(dte.ActiveWindow, GetSplitLayout());
         }
 
         public void CloseDuplicatedDocumentWindows()
@@ -204,6 +268,14 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
             // Multiple vertical splits.
             // Turn into horizontal split (vertical tab groups).
             MaybeToggleLayout(pane => pane.Bounds.top, "Window.NewVerticalTabGroup");
+        }
+
+        public enum SplitLayout
+        {
+            Vertical,
+            Horizontal,
+            Single,
+            Invalid,
         }
     }
 }

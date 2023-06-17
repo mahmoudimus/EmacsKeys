@@ -24,7 +24,6 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
         {
             DTE vs = context.Manager.ServiceProvider.GetService<DTE>();
 
-            var isSingleHorizontalPane = context.WindowOperations.IsSingleHorizontalPane();
             var isSingleVerticalPane = context.WindowOperations.IsSingleVerticalPane();
 
             if (isSingleVerticalPane.HasValue && !isSingleVerticalPane.Value)
@@ -38,19 +37,22 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
             context.WindowOperations.CloseDuplicatedDocumentWindows();
 
             // Merge tab groups
-            if (isSingleHorizontalPane.HasValue && !isSingleHorizontalPane.Value)
+            var layout = context.WindowOperations.GetSplitLayout();
+
+            if (layout == WindowOperations.SplitLayout.Horizontal ||
+                layout == WindowOperations.SplitLayout.Vertical)
             {
-                var isLeftPane = context.WindowOperations.IsLeftPane();
-                if (isLeftPane.HasValue && isLeftPane.Value)
+                var isFirstPane = context.WindowOperations.IsFirstPane(vs.ActiveWindow, layout);
+                if (isFirstPane.HasValue && isFirstPane.Value)
                 {
-                    // The active window is in the left.
-                    // Merge them to the right.
+                    // The active window is in the left or in the top.
+                    // Merge it to the next group.
                     vs.ExecuteCommand("Window.MoveAllToNextTabGroup");
                 }
-                if (isLeftPane.HasValue && !isLeftPane.Value)
+                if (isFirstPane.HasValue && !isFirstPane.Value)
                 {
-                    // The active window is in the right.
-                    // Merge them to the left.
+                    // The active window is in the right or in the bottom.
+                    // Merge it to the previous group.
                     vs.ExecuteCommand("Window.MoveAllToPreviousTabGroup");
                 }
             }
