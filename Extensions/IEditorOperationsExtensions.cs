@@ -57,8 +57,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
         //The end of the visible line is the end of the line where the caret is.
         internal static ITextSnapshotLine GetCaretPhysicalLine(this IEditorOperations editorOperations)
         {
-            var caretPosition = editorOperations.TextView.GetCaretPosition();
-            return editorOperations.TextView.TextSnapshot.TextBuffer.GetContainingLine(caretPosition);
+            return editorOperations.TextView.Caret.Position.BufferPosition.GetContainingLine();
         }
 
         internal static void MoveCaretToStartOfPhysicalLine(this IEditorOperations editorOperations)
