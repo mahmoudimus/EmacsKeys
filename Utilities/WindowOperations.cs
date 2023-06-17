@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using EnvDTE;
+using EnvDTE80;
 
 namespace Microsoft.VisualStudio.Editor.EmacsEmulation
 {
@@ -12,11 +13,14 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
     /// </summary>
     internal class WindowOperations
     {
-        DTE dte;
+        DTE2 dte;
+        TabNavigator tabNavigator;
 
-        public WindowOperations(DTE dte)
+        public WindowOperations(IServiceProvider serviceProvider)
         {
-            this.dte = dte;
+            this.tabNavigator = new TabNavigator(serviceProvider);
+            this.dte = (DTE2)serviceProvider.GetService<DTE>();
+            Assumes.Present(dte);
         }
 
         public IEnumerable<Window> GetDocumentWindows()
@@ -48,24 +52,30 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
         public bool? IsSingleHorizontalPane()
         {
             Shell.ThreadHelper.ThrowIfNotOnUIThread();
-            if (dte.ActiveWindow == null ||
-                dte.ActiveWindow.Type != vsWindowType.vsWindowTypeDocument)
+            var panes = this.tabNavigator.GetActivePanes(dte);
+            
+            if (!panes.Any())
             {
                 return null;
             }
-            var activeWindow = dte.ActiveWindow;
 
-            // TODO: Find proper way to check for single panes
-            // Sometimes non-active windows do not display dimension values properly
-            return (Math.Abs(dte.MainWindow.Width - activeWindow.Width) < 100);
+            // Return true when there is no second active pane
+            return !(panes.Skip(1).Any());
         }
 
         public bool? IsLeftPane(Window activeWindow)
         {
             Shell.ThreadHelper.ThrowIfNotOnUIThread();
-            // TODO: Find proper way to check for leftmost window
-            // Sometimes non-active windows do not display dimension values properly
-            return activeWindow.Left < 100;
+            var panes = this.tabNavigator.GetActivePanes(dte);
+
+            var leftPane = panes.OrderBy(pane => pane.Bounds.left).FirstOrDefault();
+            
+            if (leftPane == null)
+            {
+                return null;
+            }
+
+            return leftPane.Window == activeWindow;
         }
 
         public bool? IsLeftPane()
@@ -127,6 +137,19 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
                     window.Close();
                 }
             }
+        }
+
+        public void ActivateNextPane()
+        {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
+            var nextPane = this.tabNavigator.GetNextPane(dte);
+
+            if (nextPane == null)
+            {
+                return;
+            }
+
+            nextPane.Window.Activate();
         }
     }
 }

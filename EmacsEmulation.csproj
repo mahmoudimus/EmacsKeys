@@ -286,6 +286,7 @@
     <Compile Include="Utilities\MultipleCaretTagger.cs" />
     <Compile Include="Utilities\MultipleCaretTaggerProvider.cs" />
     <Compile Include="Utilities\NativeMethods.cs" />
+    <Compile Include="Utilities\TabNavigator.cs" />
     <Compile Include="Utilities\UniversalArgumentSession.cs" />
     <Compile Include="Extensions\ITextViewExtensions.cs" />
     <Compile Include="Utilities\MarkSession.cs" />

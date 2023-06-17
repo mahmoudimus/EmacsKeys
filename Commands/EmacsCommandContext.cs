@@ -24,7 +24,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
 
             this.TextStructureNavigator = textStructureNavigatorSelectorService.GetTextStructureNavigator(view.TextBuffer);
             this.MarkSession = MarkSession.GetSession(view);
-            this.WindowOperations = new WindowOperations(manager.ServiceProvider.GetService<EnvDTE.DTE>());
+            this.WindowOperations = new WindowOperations(manager.ServiceProvider);
         }
 
         internal ITextStructureNavigator TextStructureNavigator { get; private set; }
