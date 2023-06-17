@@ -93,14 +93,14 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
             }
         }
 
-        internal static ITrackingPoint CreateTrackingPoint(this ITextView view, int position)
+        internal static ITrackingPoint CreateTrackingPoint(this ITextView view, int position, PointTrackingMode trackingMode = PointTrackingMode.Negative)
         {
-            return view.TextSnapshot.CreateTrackingPoint(position, PointTrackingMode.Negative);
+            return view.TextSnapshot.CreateTrackingPoint(position, trackingMode);
         }
 
-        internal static ITrackingPoint CreateTrackingPoint(this ITextView view)
+        internal static ITrackingPoint CreateTrackingPoint(this ITextView view, PointTrackingMode trackingMode = PointTrackingMode.Negative)
         {
-            return view.TextSnapshot.CreateTrackingPoint(view.Caret.Position.BufferPosition, PointTrackingMode.Negative);
+            return view.TextSnapshot.CreateTrackingPoint(view.Caret.Position.BufferPosition, trackingMode);
         }
 
         #endregion
