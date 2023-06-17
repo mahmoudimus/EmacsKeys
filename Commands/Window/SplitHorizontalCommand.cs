@@ -27,13 +27,20 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             DTE vs = context.Manager.ServiceProvider.GetService<DTE>();
+            var layout = context.WindowOperations.GetSplitLayout();
 
-            var isSingleHorizontalPane = context.WindowOperations.IsSingleHorizontalPane();
-            var isLeftPane = context.WindowOperations.IsLeftPane();
-
-            if (!isSingleHorizontalPane.HasValue || !isLeftPane.HasValue)
+            if (layout == WindowOperations.SplitLayout.Invalid)
             {
                 // Could not get the active window. Do nothing.
+                return;
+            }
+
+            if (layout == WindowOperations.SplitLayout.Vertical)
+            {
+                // Visual Studio currently doesn't support any way of making a horizontal split in a vertical layout.
+                // Having both vertical and horizontal tab groups is not allowed, and there is no "Window.Split"
+                // equivalent for creating horizontal views of the same text.
+                context.Manager.UpdateStatus("Creating horizontal splits in a vertical section is not supported.");
                 return;
             }
 
@@ -41,13 +48,15 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
             context.Manager.StashView = context.TextView;
             vs.ActiveDocument.NewWindow().Activate();
 
-            if (isSingleHorizontalPane.Value)
+            if (layout == WindowOperations.SplitLayout.Single)
             {
                 // Create a new tab group
                 context.CommandRouter.ExecuteDTECommand("Window.NewVerticalTabGroup");
             }
             else
             {
+                var isLeftPane = context.WindowOperations.IsLeftPane();
+
                 // Move to the other tab group
                 if (isLeftPane.Value)
                 {
