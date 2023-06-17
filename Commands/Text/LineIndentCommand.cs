@@ -118,8 +118,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
             context.CommandRouter.ExecuteDTECommand("Edit.FormatSelection");
 
             // Recalculate the new indent position
-            var line = context.EditorOperations.GetCaretPhysicalLine();
-            var indentPosition = context.EditorOperations.GetNextNonWhiteSpaceCharacter(line.Start);
+            var indentPosition = context.EditorOperations.GetIndentationPosition();
 
             // Move the caret forward when needed
             if (indentPosition > position.GetPoint(context.TextView.TextSnapshot))

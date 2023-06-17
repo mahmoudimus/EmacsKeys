@@ -21,8 +21,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
     {
         internal override void Execute(EmacsCommandContext context)
         {
-            var start = context.EditorOperations.GetCaretPhysicalLine().Start;
-            var position = context.EditorOperations.GetNextNonWhiteSpaceCharacter(start);
+            var position = context.EditorOperations.GetIndentationPosition();
             context.EditorOperations.MoveCaret(position);
         }
     }

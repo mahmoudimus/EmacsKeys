@@ -166,6 +166,16 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
             return position;
         }
 
+        internal static SnapshotPoint GetIndentationPosition(this IEditorOperations editorOperations, ITextSnapshotLine line)
+        {
+            return GetNextCharacter(editorOperations, line.Start, letter => letter != ' ' && letter != '\t');
+        }
+
+        internal static SnapshotPoint GetIndentationPosition(this IEditorOperations editorOperations)
+        {
+            return GetIndentationPosition(editorOperations, editorOperations.GetCaretPhysicalLine());
+        }
+
         internal static SnapshotPoint GetNextNonWhiteSpaceCharacter(this IEditorOperations editorOperations, SnapshotPoint position)
         {
             return GetNextCharacter(editorOperations, position, letter => !Char.IsWhiteSpace(letter));
