@@ -68,7 +68,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
         internal ActivePane GetNextPane(DTE2 dte)
         {
             var currentlyActiveWindow = dte.ActiveWindow;
-            var activePanes = GetActivePanes(dte).ToList();
+            var activePanes = GetActivePanes(dte).Where(pane => pane.Window != null).ToList();
             var activePane = LookupPaneByWindow(currentlyActiveWindow, activePanes)
                 ?? LookupPaneByHierarchy(currentlyActiveWindow, activePanes);
 
@@ -88,7 +88,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
         }
 
         /// <summary> Gets all of the windows that are currently positioned with a valid Top or Left. </summary>
-        private IEnumerable<Window> GetActiveWindows(DTE2 dte)
+        internal IEnumerable<Window> GetActiveWindows(DTE2 dte)
         {
             // documents that are not the focused document in a group will have Top == 0 && Left == 0
             return from window in dte.Windows.Cast<Window>()
@@ -121,7 +121,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
         }
 
         /// <summary> Get all known <see cref="IVsWindowFrame"/>, lazily. </summary>
-        private IEnumerable<IVsWindowFrame> GetFrames()
+        internal IEnumerable<IVsWindowFrame> GetFrames()
         {
             var array = new IVsWindowFrame[1];
             _uiShell.GetDocumentWindowEnum(out var frames);
@@ -202,18 +202,25 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
         /// <summary> Information about an active window. </summary>
         internal class ActivePane
         {
-            public ActivePane(Window window, IVsWindowFrame associatedFrame)
+            public ActivePane(Window window, IVsWindowFrame associatedFrame, RECT? bounds = null)
             {
                 Window = window;
                 AssociatedFrame = associatedFrame;
-                Bounds = MeasureBounds();
+                if (bounds.HasValue)
+                {
+                    Bounds = bounds.Value;
+                }
+                else
+                {
+                    Bounds = MeasureBounds();
+                }
             }
 
             public Window Window { get; }
 
             public IVsWindowFrame AssociatedFrame { get; }
 
-            public RECT Bounds { get; }
+            public RECT Bounds { get; private set; }
 
             /// <summary> Measure the bounds of the given window </summary>
             private RECT MeasureBounds()
@@ -221,7 +228,8 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
                 var window = Window;
                 var textView = VsShellUtilities.GetTextView(AssociatedFrame);
 
-                if (textView != null && GetWindowRect(textView.GetWindowHandle(), out var rect))
+                if (Window.Object != null && textView != null &&
+                    GetWindowRect(textView.GetWindowHandle(), out var rect))
                 {
                     return rect;
                 }

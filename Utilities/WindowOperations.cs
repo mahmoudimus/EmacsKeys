@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 using EnvDTE;
 using EnvDTE80;
+using Microsoft.VisualStudio.OLE.Interop;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+using IServiceProvider = System.IServiceProvider;
+using WindowFrame = Microsoft.VisualStudio.Platform.WindowManagement.WindowFrame;
 
 namespace Microsoft.VisualStudio.Editor.EmacsEmulation
 {
@@ -26,16 +30,89 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
         public IEnumerable<Window> GetDocumentWindows()
         {
             Shell.ThreadHelper.ThrowIfNotOnUIThread();
-            // based from NavigateTabGroups implementation
-            return from window in dte.Windows.Cast<Window>()
-                   where window.Type == vsWindowType.vsWindowTypeDocument
-                   select window;
+            return this.tabNavigator.GetActiveWindows(dte);
+        }
+
+        /// <summary>
+        /// Get all active panes, excluding duplicated views of the same document
+        /// in cases such as a XAML editor with an attached designer.
+        /// </summary>
+        /// <returns>
+        /// An enumerable with all active panes.
+        /// </returns>
+        private IEnumerable<TabNavigator.ActivePane> GetActivePanes()
+        {
+            // HACK: WPF windows with a XAML and a designer view will generate a total of three panes:
+            // - An editor pane with the XAML text
+            // - A viewer pane with the design preview
+            // - A pane with both the editor and the viewer
+            // Both of these panes will have the same Window.Document and AssociatedFrame.AnnotatedTitle,
+            // but the Window.Object of the viewer and of the overall pane will be set to null.
+            // For our purposes, we want to handle the above as a single instance, which points to the text
+            // pane but holds the size of the whole window (i.e. the size of the overall pane).
+            //
+            // related to: https://github.com/zastrowm/vs-NavigateTabGroups/issues/7
+
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
+            var activePanes = this.tabNavigator.GetActivePanes(dte).ToList();
+
+            foreach (TabNavigator.ActivePane pane in activePanes)
+            {
+                if (pane.Window.Object != null)
+                {
+                    var parent = FindParentPane(activePanes, pane);
+
+                    if (parent != null)
+                    {
+                        yield return new TabNavigator.ActivePane(pane.Window, pane.AssociatedFrame, parent.Bounds);
+                    }
+                    else
+                    {
+                        yield return pane;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets all panes, active or inactive.
+        /// Note that the boundaries of inactive panes is innacurate.
+        /// </summary>
+        /// <returns>
+        /// An enumerable with all detected panes.
+        /// </returns>
+        private IEnumerable<TabNavigator.ActivePane> GetPanes()
+        {
+            return from frame in this.tabNavigator.GetFrames()
+                   let window = VsShellUtilities.GetWindowObject(frame)
+                   where window != null
+                   select new TabNavigator.ActivePane(window, frame);
+        }
+
+        private TabNavigator.ActivePane FindParentPane(IEnumerable<TabNavigator.ActivePane> activePanes, TabNavigator.ActivePane pane)
+        {
+            bool Contains(RECT lhs, RECT rhs)
+            {
+                return !lhs.Equals(rhs) &&
+                       lhs.left <= rhs.left &&
+                       lhs.top <= rhs.top &&
+                       lhs.bottom >= rhs.bottom &&
+                       lhs.right >= rhs.right;
+            }
+
+            bool IsParentPane(TabNavigator.ActivePane parent, TabNavigator.ActivePane child)
+            {
+                return parent.Window.Object == null &&
+                    parent.Window.Document == child.Window.Document &&
+                    Contains(parent.Bounds, child.Bounds);
+            }
+
+            return activePanes.FirstOrDefault(parent => IsParentPane(parent, pane));
         }
 
         public SplitLayout GetSplitLayout()
         {
-            Shell.ThreadHelper.ThrowIfNotOnUIThread();
-            var panes = this.tabNavigator.GetActivePanes(dte).ToList();
+            var panes = GetActivePanes().ToList();
             int numPanes = panes.Count();
 
             if (numPanes == 0)
@@ -81,8 +158,8 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
         public bool? IsSingleHorizontalPane()
         {
             Shell.ThreadHelper.ThrowIfNotOnUIThread();
-            var panes = this.tabNavigator.GetActivePanes(dte);
-            
+            var panes = this.tabNavigator.GetActivePanes(dte).Where(pane => pane.Window.Object != null);
+
             if (!panes.Any())
             {
                 return null;
@@ -99,9 +176,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
                 return null;
             }
 
-            Shell.ThreadHelper.ThrowIfNotOnUIThread();
-            var panes = this.tabNavigator.GetActivePanes(dte);
-
+            var panes = GetActivePanes();
             var firstPane = panes.OrderBy(orderFunction).FirstOrDefault();
 
             if (firstPane == null)
@@ -156,8 +231,6 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
 
         public void CloseDuplicatedDocumentWindows()
         {
-            Shell.ThreadHelper.ThrowIfNotOnUIThread();
-
             if (dte.ActiveDocument == null ||
                 dte.ActiveDocument.ActiveWindow == null)
             {
@@ -165,15 +238,22 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
                 return;
             }
 
+            var panes = GetPanes().ToList();
+
             // Only leave the active window of each document open
-            foreach(Document document in dte.Documents)
+            foreach (Document document in dte.Documents)
             {
-                var activeDocumentWindow = document.ActiveWindow;
-                foreach(Window window in document.Windows)
+                var activeWindow = document.ActiveWindow;
+                var activeFrame = panes.FirstOrDefault(pane => pane.Window == activeWindow)?.AssociatedFrame as WindowFrame;
+                if (activeFrame?.Clones != null)
                 {
-                    if (window != activeDocumentWindow)
+                    // Compute which windows to close before we actually start closing them,
+                    // to avoid having the data altered during operation.
+                    var clones = activeFrame.Clones.Where(frame => frame != activeFrame).ToList();
+                    foreach (WindowFrame frame in clones)
                     {
-                        window.Close();
+                        var window = panes.FirstOrDefault(pane => pane.AssociatedFrame == frame)?.Window;
+                        window?.Close();
                     }
                 }
             }
@@ -218,8 +298,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
 
         public void ToggleSplitLayout()
         {
-            Shell.ThreadHelper.ThrowIfNotOnUIThread();
-            var panes = this.tabNavigator.GetActivePanes(dte).ToList();
+            var panes = GetActivePanes().ToList();
 
             // TODO: currently only support two panes
             if (panes.Count != 2)
