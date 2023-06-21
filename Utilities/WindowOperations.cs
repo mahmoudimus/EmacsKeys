@@ -278,7 +278,13 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
                 if (window != activeDocumentWindow &&
                     window.Type == activeDocumentWindow.Type)
                 {
-                    window.Close();
+                    // FIXME: if the active window has attached views, such as a designer in a XAML editor,
+                    // we don't want to close that. For now, avoid closing all attached views with the same
+                    // Document instance of the active window, although this may be unable to close some windows.
+                    if (!(window.Object == null && window.Document == activeDocumentWindow.Document))
+                    {
+                        window.Close();
+                    }
                 }
             }
         }
