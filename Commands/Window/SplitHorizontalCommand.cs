@@ -28,6 +28,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
             ThreadHelper.ThrowIfNotOnUIThread();
             DTE vs = context.Manager.ServiceProvider.GetService<DTE>();
             var layout = context.WindowOperations.GetSplitLayout();
+            var isLeftPane = (layout != WindowOperations.SplitLayout.Horizontal) ? true : context.WindowOperations.IsLeftPane();
 
             if (layout == WindowOperations.SplitLayout.Invalid)
             {
@@ -46,25 +47,23 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
 
             // Create a new view of the active document with the same formatting
             context.Manager.StashView = context.TextView;
-            vs.ActiveDocument.NewWindow().Activate();
+            vs.ActiveDocument.NewWindow();
 
             if (layout == WindowOperations.SplitLayout.Single)
             {
                 // Create a new tab group
-                context.CommandRouter.ExecuteDTECommand("Window.NewVerticalTabGroup");
+                vs.ExecuteCommand("Window.NewVerticalTabGroup");
             }
             else
             {
-                var isLeftPane = context.WindowOperations.IsLeftPane();
-
                 // Move to the other tab group
                 if (isLeftPane.Value)
                 {
-                    context.CommandRouter.ExecuteDTECommand("Window.MovetoNextTabGroup");
+                    vs.ExecuteCommand("Window.MovetoNextTabGroup");
                 }
                 else
                 {
-                    context.CommandRouter.ExecuteDTECommand("Window.MovetoPreviousTabGroup");
+                    vs.ExecuteCommand("Window.MovetoPreviousTabGroup");
                 }
             }
         }
