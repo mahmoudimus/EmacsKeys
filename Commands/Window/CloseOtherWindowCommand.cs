@@ -25,6 +25,8 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
             DTE vs = context.Manager.ServiceProvider.GetService<DTE>();
 
             var isSingleVerticalPane = context.WindowOperations.IsSingleVerticalPane();
+            var layout = context.WindowOperations.GetSplitLayout();
+            var isFirstPane = context.WindowOperations.IsFirstPane(vs.ActiveWindow, layout);
 
             if (isSingleVerticalPane.HasValue && !isSingleVerticalPane.Value)
             {
@@ -37,12 +39,9 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
             context.WindowOperations.CloseDuplicatedDocumentWindows();
 
             // Merge tab groups
-            var layout = context.WindowOperations.GetSplitLayout();
-
             if (layout == WindowOperations.SplitLayout.Horizontal ||
                 layout == WindowOperations.SplitLayout.Vertical)
             {
-                var isFirstPane = context.WindowOperations.IsFirstPane(vs.ActiveWindow, layout);
                 if (isFirstPane.HasValue && isFirstPane.Value)
                 {
                     // The active window is in the left or in the top.
