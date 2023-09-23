@@ -21,6 +21,13 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
     {
         internal override void Execute(EmacsCommandContext context)
         {
+            // BOF check
+            if (context.EditorOperations.GetCaretPhysicalLine().LineNumber == 0)
+            {
+                context.Manager.UpdateStatus("Beginning of buffer");
+                return;
+            }
+
             context.EditorOperations.MoveLineUp();
         }
     }

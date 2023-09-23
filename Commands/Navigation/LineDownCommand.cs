@@ -21,6 +21,16 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
     {
         internal override void Execute(EmacsCommandContext context)
         {
+            // EOF check
+            var caretLine = context.EditorOperations.GetCaretPhysicalLine();
+            var lineCount = context.TextBuffer.CurrentSnapshot.LineCount;
+            if (caretLine.LineNumber == (lineCount - 1))
+            {
+                context.EditorOperations.MoveCaretToEndOfPhysicalLine();
+                context.Manager.UpdateStatus("End of buffer");
+                return;
+            }
+
             context.EditorOperations.MoveLineDown();
         }
     }
