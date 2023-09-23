@@ -113,8 +113,16 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
                         // Leave this behavior as is, but avoid the automatic expansion of search results
                         MarkSession.GetSession(view).AfterSearch = true;
                     }
-                    else if (pguidCmdGroup == VSConstants.GUID_VSStandardCommandSet97 &&
-                        (nCmdID == (uint)VSConstants.VSStd97CmdID.GotoDefn || nCmdID == (uint)VSConstants.VSStd97CmdID.GotoDecl || nCmdID == (uint)VSConstants.VSStd97CmdID.GotoRef))
+                    else if (pguidCmdGroup == VSConstants.VsStd15 && nCmdID == (uint)VSConstants.VSStd15CmdID.NavigateToMember)
+                    {
+                        // Avoid expanding the incoming selection, which is used only to highlight the search result
+                        MarkSession.GetSession(view).AfterSearch = true;
+                    }
+                    else if (
+                        (pguidCmdGroup == VSConstants.GUID_VSStandardCommandSet97 &&
+                        (nCmdID == (uint)VSConstants.VSStd97CmdID.GotoDefn || nCmdID == (uint)VSConstants.VSStd97CmdID.GotoDecl || nCmdID == (uint)VSConstants.VSStd97CmdID.GotoRef)) ||
+                        (pguidCmdGroup == VSConstants.VsStd15 &&
+                        (nCmdID == (uint)VSConstants.VSStd15CmdID.NavigateToSymbol || nCmdID == (uint)VSConstants.VSStd15CmdID.NavigateToType)))
                     {
                         // Goto commands determine the search result by the looking at the symbol at the
                         // start of the selection, and can highlight the results in the current or in another view.
