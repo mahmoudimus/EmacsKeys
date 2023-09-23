@@ -27,6 +27,9 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
     {
         internal override void Execute(EmacsCommandContext context)
         {
+            // Make sure that existing selections are extended
+            context.MarkSession.ContinuousSelectionMode = true;
+
             if (context.Manager.UniversalArgument.HasValue)
             {
                 var lineNumber = context.Manager.UniversalArgument.Value - 1;
