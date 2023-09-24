@@ -90,5 +90,6 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
         VirtualCaretActivate = 0x61,
 
         ToggleWindowSplitLayout = 0x62,
+        MovetoOtherTabGroup = 0x63,
     }
 }

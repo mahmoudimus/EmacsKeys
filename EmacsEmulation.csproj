@@ -238,6 +238,7 @@
     <Compile Include="Commands\Text\UppercaseSelectionCommand.cs" />
     <Compile Include="Commands\Window\DeleteOtherWindowCommand.cs" />
     <Compile Include="Commands\Window\DeleteWindowCommand.cs" />
+    <Compile Include="Commands\Window\MovetoOtherTabGroupCommand.cs" />
     <Compile Include="Commands\Window\NextWindowCommand.cs" />
     <Compile Include="Commands\Window\PreviousWindowCommand.cs" />
     <Compile Include="Commands\Window\SplitHorizontalCommand.cs" />

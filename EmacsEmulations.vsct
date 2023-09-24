@@ -245,6 +245,14 @@
               <ButtonText>EmacsToggleWindowSplitLayout</ButtonText>
           </Strings>
       </Button>
+
+      <Button guid="guidEmacsEmulationsCmdSet" id="cmdidMovetoOtherTabGroup" priority="0x0100" type="Button">
+          <Parent guid="guidEmacsEmulationsCmdSet" id="EmacsEmulationsMenuGroup" />
+          <CommandFlag>CommandWellOnly</CommandFlag>
+          <Strings>
+              <ButtonText>EmacsMovetoOtherTabGroup</ButtonText>
+          </Strings>
+      </Button>
     </Buttons>
 
 
@@ -443,6 +451,7 @@
       <IDSymbol name="cmdidVirtualCaretInsertAtPoint" value="0x60"/>
       <IDSymbol name="cmdidVirtualCaretActivate" value="0x61"/>
       <IDSymbol name="cmdidToggleWindowSplitLayout" value="0x62"/>
+      <IDSymbol name="cmdidMovetoOtherTabGroup" value="0x63"/>
 
     </GuidSymbol>
 
