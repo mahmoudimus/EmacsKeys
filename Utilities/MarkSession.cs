@@ -297,10 +297,27 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
             return VSConstants.S_FALSE;
         }
 
-        public override void PostprocessMouseLeftButtonDown(System.Windows.Input.MouseButtonEventArgs e)
+        // Mouse Operations
+        // The Emacs interface appears to behave as following:
+        // 1. Single clicks deactivate mark sessions
+        // 2. Double clicks or drags create a selection, but don't activate the mark
+        // 3. Right clicks extend the current selection
+
+        // In the following, try to mimic 1. and 2.
+        // 3. is achieved by `Shift + Left Click` instead
+
+        public override void PostprocessMouseDown(System.Windows.Input.MouseButtonEventArgs e)
         {
+            // Handle single, double, and right clicks
             Deactivate(false);
-            base.PostprocessMouseLeftButtonDown(e);
+            base.PostprocessMouseDown(e);
+        }
+
+        public override void PostprocessMouseLeftButtonUp(System.Windows.Input.MouseButtonEventArgs e)
+        {
+            // Handle mouse drags
+            Deactivate(false);
+            base.PostprocessMouseLeftButtonUp(e);
         }
     }
 }
