@@ -39,7 +39,8 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
             {
                 // Multiple split panes.
                 // Calling Window.Split again will fold them for us.
-                context.CommandRouter.ExecuteDTECommand("Window.Split");
+                vs.ExecuteCommand("Window.NextSplitPane");
+                vs.ExecuteCommand("Window.Split");
             }
         }
     }
