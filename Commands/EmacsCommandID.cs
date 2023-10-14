@@ -85,6 +85,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation.Commands
         DeleteOtherWindow = 0x57,
         MarkEnclosing = 0x58,
         DeleteWholeLine = 0x59,
+        MoveToWindowLineCenter = 0x5A,
 
         VirtualCaretInsertAtPoint = 0x60,
         VirtualCaretActivate = 0x61,

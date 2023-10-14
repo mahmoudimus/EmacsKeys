@@ -222,6 +222,14 @@
           </Strings>
       </Button>
 
+      <Button guid="guidEmacsEmulationsCmdSet" id="cmdidMoveToWindowLineCenter" priority="0x0100" type="Button">
+          <Parent guid="guidEmacsEmulationsCmdSet" id="EmacsEmulationsMenuGroup" />
+          <CommandFlag>CommandWellOnly</CommandFlag>
+          <Strings>
+              <ButtonText>EmacsMoveToWindowLineCenter</ButtonText>
+          </Strings>
+      </Button>
+
       <Button guid="guidEmacsEmulationsCmdSet" id="cmdidVirtualCaretInsertAtPoint" priority="0x0100" type="Button">
           <Parent guid="guidEmacsEmulationsCmdSet" id="EmacsEmulationsMenuGroup" />
           <CommandFlag>CommandWellOnly</CommandFlag>
@@ -382,6 +390,11 @@
       editor="GUID_TextEditorFactory" />
 
     <KeyBinding guid="guidEmacsEmulationsCmdSet"
+       id="cmdidMoveToWindowLineCenter"
+       mod1="ALT" key1="R"
+       editor="GUID_TextEditorFactory" />
+
+    <KeyBinding guid="guidEmacsEmulationsCmdSet"
       id="cmdidVirtualCaretInsertAtPoint"
       mod1="CONTROL" key1="M" key2="VK_SPACE"
       editor="GUID_TextEditorFactory" />
@@ -448,6 +461,7 @@
       <IDSymbol name="cmdidDeleteOtherWindow" value="0x57" />
       <IDSymbol name="cmdidMarkEnclosing" value="0x58" />
       <IDSymbol name="cmdidDeleteWholeLine" value="0x59" />
+      <IDSymbol name="cmdidMoveToWindowLineCenter" value="0x5A" />
       <IDSymbol name="cmdidVirtualCaretInsertAtPoint" value="0x60"/>
       <IDSymbol name="cmdidVirtualCaretActivate" value="0x61"/>
       <IDSymbol name="cmdidToggleWindowSplitLayout" value="0x62"/>

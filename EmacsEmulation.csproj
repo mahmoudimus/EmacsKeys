@@ -226,6 +226,7 @@
     <Compile Include="Commands\Navigation\BackToIndentationCommand.cs" />
     <Compile Include="Commands\Navigation\EnclosingNextCommand.cs" />
     <Compile Include="Commands\Navigation\EnclosingPreviousCommand.cs" />
+    <Compile Include="Commands\Navigation\MoveToWindowLineCenterCommand.cs" />
     <Compile Include="Commands\Navigation\ParagraphNextCommand.cs" />
     <Compile Include="Commands\Navigation\ParagraphPreviousCommand.cs" />
     <Compile Include="Commands\Text\CapitalizeSelectionCommand.cs" />
