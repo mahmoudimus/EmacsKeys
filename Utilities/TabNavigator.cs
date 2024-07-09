@@ -160,7 +160,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
             // document?  In that case, try to go up until we find a document pane that we know about.
             //
             // This happens for Project Property panes
-            var currentHwnd = new IntPtr(childWindow.HWnd);
+            var currentHwnd = childWindow.HWnd;
 
             // max out at 20 just in case we keep going up and never find anything.
             for (int i = 0; i < 20 && currentHwnd != IntPtr.Zero; i++)
@@ -179,7 +179,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
             {
                 foreach (var pane in activePanes)
                 {
-                    if (new IntPtr(pane.Window.HWnd) == searchHwnd)
+                    if (pane.Window.HWnd == searchHwnd)
                     {
                         return pane;
                     }
@@ -234,7 +234,7 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
                     return rect;
                 }
 
-                if (Window.HWnd != 0 && GetWindowRect(new IntPtr(Window.HWnd), out var rect2))
+                if (Window.HWnd != IntPtr.Zero && GetWindowRect(Window.HWnd, out var rect2))
                 {
                     return rect2;
                 }
