@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="EmacsEmulation.9CC71440-2082-4459-BFD0-193CE3C56471" Version="6.0" Language="en-US" Publisher="Justin Clareburt" />
+        <Identity Id="EmacsEmulation.9CC71440-2082-4459-BFD0-193CE3C56471" Version="6.1" Language="en-US" Publisher="Justin Clareburt" />
         <DisplayName>Emacs Emulation</DisplayName>
         <Description xml:space="preserve">Provides basic support for Emacs keybindings and text editing commands.</Description>
         <License>LICENSE.rtf</License>
