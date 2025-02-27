@@ -94,7 +94,14 @@ namespace Microsoft.VisualStudio.Editor.EmacsEmulation
                 }
             }
 
-            return this.Next.Exec(ref pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
+            try
+            {
+                return this.Next.Exec(ref pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
+            }
+            catch (ArgumentException)
+            {
+                return (int)OLE.Interop.Constants.OLECMDERR_E_CANCELED;
+            }
         }
 
         /// <summary>
