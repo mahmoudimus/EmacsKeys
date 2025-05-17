@@ -1,6 +1,7 @@
 ﻿Emacs Emulation
 [Open source code forked from https://github.com/zbrad/EmacsKeys]
 
+27-Feb-2025 - v6.1: Fix VS crash empty line tab indent in XAML (Thanks Nobuyuki Imai)
 19-Nov-2021 - v6.0: Version for VS2022+ only.
 19-Nov-2021 - v5.2: Version limited to VS2019. New branch cut for VS2019 maintenance.
 09-Nov-2021 - v5.0: Upgraded to VS2022
